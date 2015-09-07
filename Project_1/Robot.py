@@ -5,7 +5,7 @@ class Robot:
         self.direction = direction
         self.curNode = curNode
 
-    def fwd():
+    def forward():
 
     def bash():
 
