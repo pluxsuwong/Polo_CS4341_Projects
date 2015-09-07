@@ -1,8 +1,8 @@
 import Node
 
 class Robot:
-    def __init__(self,dir,curNode):
-        self.dir = dir
+    def __init__(self,direction,curNode):
+        self.direction = direction
         self.curNode = curNode
 
     def fwd():
