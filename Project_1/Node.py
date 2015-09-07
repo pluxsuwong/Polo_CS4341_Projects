@@ -15,10 +15,24 @@ class Node:
         self.allNeighbors = allNeighbors # All neighbors of the this node contains: N, E, S, W, NE, NW, SE, SW
         self.movableNeighbor = movableNeighbor # The 4 neighbors that the robot can move to: N, E, S, W
 
-<<<<<<< HEAD
     # This function takes in the direction, and returns the node according to the orientation
     def nextNode(self, direction):
-        print("Hello")
-=======
+        if direction == 'NORTH':
+	#returns the node to the north of the current node (12'oclock)
+            return row+1
 
->>>>>>> origin/master
+        elif direction == 'EAST':
+        #returns the node to the east of the current node (3'oclock)
+            return col+1
+
+
+        elif direction == 'SOUTH':
+        #returns the node to the south of the current node (6'oclock)
+            return row-1
+
+        else:
+        #returns the node to the west of the current node (9'oclock)
+            return col-1
+
+       # print("Hello")
+
