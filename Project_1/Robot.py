@@ -2,15 +2,14 @@ import Node
 import math
 
 class Robot:
-    def __init__(self, direction, curNode, timeTraveled, map):
-        self.map = map # The robot needs to now the whole map
+    def __init__(self, direction, curNode, timeTraveled):
         self.direction = direction # North, East, South, West, North East, North West, South East, South West are represented by N, E, S, W, NE, NW, SE, SW
         self.curNode = curNode # The node the robot is currently in
         self.timeTraveled = timeTraveled # The total time the robot has traveled
 
     # ============================================ Next Node ============================================
     # This function takes in the direction, and returns the neighboring node according to the orientation
-    def nextNode(self, nextDir):
+    def nextNode(self, nextDir, terrainMap):
         nextCol = -1
         nextRow = -1
         message = 'moving ...'
@@ -59,12 +58,12 @@ class Robot:
             message = 'Please enter a valid direction'
 
         # Check the validity of next node:
-        if (nextRow > self.map.row() - 1) or (nextRow < 0) or (nextCol > self.map.col() - 1) or (nextCol < 0):
+        if (nextRow > terrainMap.row() - 1) or (nextRow < 0) or (nextCol > terrainMap.col() - 1) or (nextCol < 0):
             print('robot at the edge of map')
             return
 
         print(message)
-        return self.terrain[nextCol][nextRow]
+        return self.terrainMap[nextCol][nextRow]
 
     # ============================================ Forward ============================================
     # Moves the agent 1 unit forward on the map without changing its facing direction
@@ -145,6 +144,8 @@ class Robot:
 
         # Time taken = 4
         self.timeTraveled += 4
+
+
 
 
 

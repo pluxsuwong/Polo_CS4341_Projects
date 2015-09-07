@@ -16,3 +16,5 @@ class Node:
         self.movableNeighbor = movableNeighbor # The 4 neighbors that the robot can move to: N, E, S, W
 
 
+
+
