@@ -20,22 +20,22 @@ class Node:
         if direction == 'N':
 	    #returns the node to the north of the current node (12'oclock)
             #access the map 
-            self.row = row + 1
+            self.row = self.row + 1
             return movableNeighbor[0]
 
         elif direction == 'E':
             #returns the node to the east of the current node (3'oclock)
-            self.col = col + 1
+            self.col = self.col + 1
             return movableNeighbor[1]
 
         elif direction == 'S':
             #returns the node to the south of the current node (6'oclock)
-            self.row = row - 1
+            self.row = self.row - 1
             return movableNeighbor[2]
 
         elif direction == 'W':
             #returns the node to the west of the current node (9'oclock)
-            self.col = col - 1
+            self.col = self.col - 1
             return movableNeighbor[3]
 
         else: 
