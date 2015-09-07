@@ -74,7 +74,12 @@ class Robot:
     
 
     # ============================================ Bash ============================================
+    # Agent charges forward 1 unit without changing its facing direction.
+    # After bash action, agent's next action is forward movement of 1 unit for stabilization
+    # Time required: 4. 3 for bashing (ignores terrain complexity) and 1 for compulsory forward movement for stabilization
     def bash(self):
+        self.curNode = self.curNode.nextNode(self,self.direction)
+        self.timeTraveled += 4
         print('bash')
     
     
