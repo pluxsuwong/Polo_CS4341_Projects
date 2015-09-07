@@ -11,10 +11,7 @@ class Node:
         self.h_score = h_score
         self.g_score = g_score
         self.f_score = f_score
-        self.parentNode = parentNode
-        self.neighbors = neighbors
+        self.parentNode = parentNode # The node that this node came from
+        self.neighbors = neighbors # The neighbors of the this node contains: N, E, S, W, NE, NW, SE, SW
 
-    # This function takes in the direction, and returns the node according to the orientation
-    def nextNode(self, dir):
-        print("Hello")
 
