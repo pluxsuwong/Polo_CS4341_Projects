@@ -1,7 +1,7 @@
 import Node
 
 class Robot:
-    def __init__(dir,curNode):
+    def __init__(self,dir,curNode):
         self.dir = dir
         self.curNode = curNode
 
