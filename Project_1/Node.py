@@ -15,6 +15,5 @@ class Node:
         self.neighbors = neighbors
 
     # This function takes in the direction, and returns the node according to the orientation
-    def nextNode(self, dir):
+    def nextNode(self, direction):
         print("Hello")
-
