@@ -3,21 +3,15 @@ import re
 import Node
 import Terrain
 
-# N, E, S, W
-def initMovableNeighbor(col, row): # TODO: need to know map dimensions
-    arr = []
-    return arr
 
-# N, E, S, W, NE, NW, SE, SW
-def initAllNeighbors(movableNeighbor, col, row): # TODO: need to know map dimensions
-    arr = []
-    return arr
-
+# ========================================= Process Input =========================================
+# takes in a filename
+# returns a Terrain object
 fd = [line for line in fileinput.input()]
 
-terrain = []    # 2-D list of lists of nodes
-start = [0, 0]
-goal = [0, 0]
+tempT = []    # 2-D list of lists of nodes
+start = (0, 0)
+goal = (0, 0)
 row = 0
 
 for line in fd:
@@ -26,34 +20,30 @@ for line in fd:
     col = 0
 
     for c in raw_row:
-        h_score = float("inf")
-        g_score = float("inf")
-        f_score = float("inf")
-        parentNode = None
-        movableNeighbor = initMovableNeighbor(col, row)
-        allNeighbors = initAllNeighbors(movableNeighbor, col, row)
         
         try:
             complexity = int(c)
         except ValueError:
             # is S or G
             if c == 'S':
-                start = [col, row]
+                start = (col, row)
             elif c == 'G':
-                goal = [col, row]
+                goal = (col, row)
             else:
                 print 'Invalid char in input'
             complexity = 1
 
-        new_row.append(Node.Node(
-            row, col, complexity,
-            h_score, g_score, f_score,
-            parentNode, allNeighbors, movableNeighbor))
+        new_row.append(Node.Node(col, row, complexity))
         col += 1
 
-    terrain.append(new_row)
+    tempT.append(new_row)
     row += 1
 
 
+terrain = Terrain.Terrain(tempT, start, goal)
+terrain.initMovableNeighbors()
+terrain.initAllNeighbors()
 
-print terrain
+# ========================================= Finish Processing Input =========================================
+
+

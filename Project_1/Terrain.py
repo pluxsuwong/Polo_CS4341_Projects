@@ -1,16 +1,27 @@
 class Terrain:
     def __init__(self, terrain, start, goal):
-        self.terrain = terrain
-        self.start = start
-        self.goal = goal
+        self.terrain = terrain # 2D list of lists of (initially unlinked) Node objects
+        self.start = start # Coordinate tuple
+        self.goal = goal # Coordinate tuple
+    
 
-    # Return number of row of the terrain
-    def row(self):
-        return
+    # Getter for a node in the terrain
+    # return a NODE object
+    def getNode(self, col, row):
+        return self.terrain[col][row]
 
-    # Return number of column of the terrain
-    def col(self):
-        return
+    # N, E, S, W
+    def initMovableNeighbors(self): # TODO: need to know map dimensions
+        arr = []
+        return arr
+    
+    # N, E, S, W, NE, NW, SE, SW
+    def initAllNeighbors(self, col, row): # TODO: need to know map dimensions
+        arr = []
+        return arr
+
+
+
 
 
 
