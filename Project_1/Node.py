@@ -45,5 +45,7 @@ class Node:
             #any other cases
             print 'invalid direction'
 
+    def shortestWayToThisNode(self)
+
 
 
