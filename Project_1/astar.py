@@ -41,17 +41,27 @@ for line in fd:
     tempT.append(new_row)
     row += 1
 
+# ========================================= A* Search =========================================
+# Tri and Peter will work on astar
+
+# Initialize the terrain
 terrain = Terrain.Terrain(tempT, start, goal)
 terrain.initMovableNeighbors()
 terrain.initAllNeighbors()
 terrain.initHeuristic(heuristic)
-print terrain
 
-# ========================================= Finish Processing Input =========================================
-# Tri and Peter will work on astar
+# Initialize the robot
+baymax = Robot.Robot(terrain.start)
 
 closedSet = [] # Stores tuple
 openSet = [terrain.start] # Stores tuple
+
+while not openSet:
+    
+    lowestNodeInOpenSet = float("inf")
+    for node in openSet:
+        if terrain.getNode(node[0], node[1]).f_score < lowestNodeInOpenSet:
+            lowestNodeInOpenSet = terrain.getNode(node[0], node[1]).f_score
 
 
 

@@ -45,7 +45,9 @@ class Node:
             #any other cases
             print 'invalid direction'
 
-    def shortestWayToThisNode(self)
+    # return neighbor with lowest g_score
+    def optimalNeighbor(self):
+        boobies
 
 
 
