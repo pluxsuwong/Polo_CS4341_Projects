@@ -47,4 +47,4 @@ terrain.initAllNeighbors()
 # ========================================= Finish Processing Input =========================================
 # Tri and Peter will work on astar
 
-
+print terrain
