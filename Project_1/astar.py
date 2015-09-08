@@ -1,5 +1,6 @@
 import fileinput
 import re
+import sys
 import Node
 import Terrain
 
@@ -7,23 +8,21 @@ import Terrain
 # ========================================= Process Input =========================================
 # takes in a filename
 # returns a Terrain object
-fd = [line for line in fileinput.input()]
+fd = [line for line in fileinput.input(sys.argv[1])]
+fileinput.close()
+heuristic = int(sys.argv[2])
 
 tempT = []    # 2-D list of lists of nodes
 start = (0, 0)
 goal = (0, 0)
 row = 0
 
-for index, line in enumerate(fd):
-    if index == len(fd) - 1:
-        heuristic = int(line)
-    
+for line in fd:
     raw_row = re.split(r'\t+', line.rstrip('\t\r\n'))
     new_row = []
     col = 0
 
     for c in raw_row:
-        
         try:
             complexity = int(c)
         except ValueError:
@@ -42,11 +41,11 @@ for index, line in enumerate(fd):
     tempT.append(new_row)
     row += 1
 
-
 terrain = Terrain.Terrain(tempT, start, goal)
 terrain.initMovableNeighbors()
 terrain.initAllNeighbors()
 terrain.initHeuristic(heuristic)
+print terrain
 
 # ========================================= Finish Processing Input =========================================
 # Tri and Peter will work on astar
