@@ -11,12 +11,12 @@ class Terrain:
         return self.terrain[col][row]
 
     # N, E, S, W
-    def initMovableNeighbors(self): # TODO: need to know map dimensions
+    def initMovableNeighbors(self): # TODO: William will take this
         arr = []
         return arr
     
     # N, E, S, W, NE, NW, SE, SW
-    def initAllNeighbors(self, col, row): # TODO: need to know map dimensions
+    def initAllNeighbors(self, col, row): # TODO: Jetro
         arr = []
         return arr
 
