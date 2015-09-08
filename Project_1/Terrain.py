@@ -12,14 +12,19 @@ class Terrain:
     # Informational 2-D map of terrain
     def __repr__(self):
         buf = ""
-        for line in self.terrain:
+        for j, line in enumerate(self.terrain):
             for n in line:
                 buf += ' ------------------ '
             buf += '\n'
-            for n in line:
-                buf += '|' + \
-                        '{:>3}'.format(str(n.complexity)) + ', ' + \
-                        '{:>3}'.format(str(n.h_score)) + ', ' + \
+            for i, n in enumerate(line):
+                buf += '|'
+                if self.start[0] == i and self.start[1] == j:
+                    buf += '{:>3}'.format('S')
+                elif self.goal[0] == i and self.goal[1] == j:
+                    buf += '{:>3}'.format('G')
+                else:
+                    buf += '{:>3}'.format(str(n.complexity))
+                buf += ', ' + '{:>3}'.format(str(n.h_score)) + ', ' + \
                         '{:>3}'.format(str(n.g_score)) + ', ' + \
                         '{:>3}'.format(str(n.f_score)) + '|'
             buf += '\n'
