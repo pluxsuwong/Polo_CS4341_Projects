@@ -14,14 +14,17 @@ class Terrain:
         buf = ""
         for line in self.terrain:
             for n in line:
-                buf += ' ---------------- '
+                buf += ' ------------------ '
             buf += '\n'
             for n in line:
-                buf += '|' + str(n.complexity) + ', ' + str(n.h_score) + ', ' + \
-                         str(n.g_score) + ', ' + str(n.f_score) + '|'
+                buf += '|' + \
+                        '{:>3}'.format(str(n.complexity)) + ', ' + \
+                        '{:>3}'.format(str(n.h_score)) + ', ' + \
+                        '{:>3}'.format(str(n.g_score)) + ', ' + \
+                        '{:>3}'.format(str(n.f_score)) + '|'
             buf += '\n'
             for n in line:
-                buf += ' ---------------- '
+                buf += ' ------------------ '
             buf += '\n'
                 
         return buf
