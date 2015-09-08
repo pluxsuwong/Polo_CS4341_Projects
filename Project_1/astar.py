@@ -14,7 +14,10 @@ start = (0, 0)
 goal = (0, 0)
 row = 0
 
-for line in fd:
+for index, line in enumerate(fd):
+    if index == len(fd) - 1:
+        heuristic = int(line)
+    
     raw_row = re.split(r'\t+', line.rstrip('\t\r\n'))
     new_row = []
     col = 0
@@ -43,8 +46,13 @@ for line in fd:
 terrain = Terrain.Terrain(tempT, start, goal)
 terrain.initMovableNeighbors()
 terrain.initAllNeighbors()
+terrain.initHeuristic(heuristic)
 
 # ========================================= Finish Processing Input =========================================
 # Tri and Peter will work on astar
 
-print terrain
+closedSet = [] # Stores tuple
+openSet = [terrain.start] # Stores tuple
+
+
+
