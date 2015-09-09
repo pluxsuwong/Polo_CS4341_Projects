@@ -87,3 +87,7 @@ class Robot: # Baymax
         # Time taken = 4
         self.timeTraveled += 4
 
+    # ======================== Move Cost =======================
+    # Returns cost of moving to a neighbor node
+    def moveCost(neighbor):
+        # ...        

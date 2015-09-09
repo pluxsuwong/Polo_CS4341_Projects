@@ -42,14 +42,14 @@ for line in fd:
 
 # ========================================= Helper Functions =========================================
 
-# Returns a tuple representing a node
-def getLowestNode(terrain, openSet):
+# Move robot to next node
+def moveRobot(robot, terrain, openSet):
     if openSet:
-        lowestNode = openSet[0]
+        lowestNode = openSet[0] # arbitrary initial node
         for node in openSet:
             if terrain.getNode(node).f_score < lowestNode:
                 lowestNode = node
-        return lowestNode
+        robot.curNode = lowestNode
     else:
         print 'The Set is empty'
 
@@ -81,18 +81,25 @@ openSet = [terrain.start] # List of node tuples to be evaluated
 moveSet = []
 
 while not openSet: # while openSet is not empty
-    baymax.curNode = getLowestNode(terrain, openSet) # get the node with the lowest f score in the openSet
+    moveRobot(baymax, terrain, openSet) # actuate robot
+
     if baymax.curNode == terrain.goal:
         results[0] = 100 - baymax.timeTraveled
         results[1] = len(moveSet)
         results[2] = len(closedSet)
         results[3] = moveSet
         break
+    else:
+        moveSet.extend(baymax.curNode.parentAction)
 
     openSet.remove(baymax.curNode)
     closedSet.append(baymax.curNode)
     curNodeNeighbors = terrain.getNode(baymax.curNode).movableNeighbors
-    for node in curNodesNeighbors:
+    for neighbor in curNodeNeighbors:
+        if closedSet.count(neighbor) > 0:
+            continue
         
+        movCost = baymax.moveCost(neighbor)
+        gScoreBuf = curNode.g_score + movCost
 
 # printResults(results)
