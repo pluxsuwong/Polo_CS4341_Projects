@@ -4,7 +4,6 @@ import sys
 import Node
 import Terrain
 
-
 # ========================================= Process Input =========================================
 # takes in a filename
 # returns a Terrain object
@@ -43,18 +42,30 @@ for line in fd:
 
 # ========================================= Helper Functions =========================================
 
-def getLowestNode(terrainMap, oSet):
-    lowestNodeInOpenSet = Node.Node(-1, -1, float("int"))
-    if oSet:
+# Returns a tuple representing a node
+def getLowestNode(terrain, openSet):
+    if openSet:
+        lowestNode = openSet[0]
         for node in openSet:
-            if terrain.getNode(node[0], node[1]).f_score < lowestNodeInOpenSet:
-                lowestNodeInOpenSet = terrain.getNode(node[0], node[1])
-        return lowestNodeInOpenSet
+            if terrain.getNode(node).f_score < lowestNode:
+                lowestNode = node
+        return lowestNode
     else:
         print 'The Set is empty'
 
+# Displays results to screen
+def printResults(results):
+    print 'Score of Path: ' + str(results[0])
+    print 'Number of Actions: ' + str(results[1])
+    print 'Number of Nodes Expanded: ' + str(results[2])
+    for action in results[3]:
+        print action
+
 # ========================================= A* Search =========================================
 # Tri and Peter will work on astar
+# Output variables
+# Path Score, Num of Actions, Num of Nodes in Closed List, Actions Taken
+results = (0, 0, 0, [])
 
 # Initialize the terrain
 terrain = Terrain.Terrain(tempT, start, goal)
@@ -65,13 +76,23 @@ terrain.initHeuristic(heuristic)
 # Initialize the robot
 baymax = Robot.Robot(terrain.start)
 
-closedSet = [] # List of tuples
-openSet = [terrain.start] # List of tuples
+closedSet = [] # List of node tuples already evaluated
+openSet = [terrain.start] # List of node tuples to be evaluated
+moveSet = []
 
 while not openSet: # while openSet is not empty
-    nodeWithLowestF = getLowestNode(terrain, openSet) # get the node with the lowest f score in the openSet
+    baymax.curNode = getLowestNode(terrain, openSet) # get the node with the lowest f score in the openSet
+    if baymax.curNode == terrain.goal:
+        results[0] = 100 - baymax.timeTraveled
+        results[1] = len(moveSet)
+        results[2] = len(closedSet)
+        results[3] = moveSet
+        break
 
+    openSet.remove(baymax.curNode)
+    closedSet.append(baymax.curNode)
+    curNode = terrain.getNode(baymax.curNode)
+    for node in baymax.curNode:
+        # ...
 
-
-
-
+# printResults(results)

@@ -5,8 +5,7 @@ import Terrain
 
 class Node:
     def __init__(self, col, row, complexity):
-        self.col = col
-        self.row = row
+        self.pos = (col, row)
         self.complexity = complexity
         self.h_score = float("inf")
         self.g_score = float("inf")
@@ -14,12 +13,6 @@ class Node:
         self.parentNode = None # The node (tuple) that this node came from
         self.allNeighbors = [] # List of all neighbors (tuples) of this node: N, E, S, W, NE, NW, SE, SW
         self.movableNeighbor = [] # List of 4 neighbors (tuples) that the robot can move to: N, E, S, W
-
-    # Getter for returning the coordinate of the node
-    # return a tuple
-    def getCoord(self):
-        coordinate = (self.col, self.row)
-        return coordinate
 
     # This function takes in the direction, and returns the tuple according to the orientation
     def nextNode(self, direction):
@@ -44,10 +37,4 @@ class Node:
         else: 
             #any other cases
             print 'invalid direction'
-
-    # return neighbor with lowest g_score
-    def optimalNeighbor(self):
-        boobies
-
-
 

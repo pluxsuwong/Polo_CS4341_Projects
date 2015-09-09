@@ -6,8 +6,8 @@ class Terrain:
 
     # Getter for a node in the terrain
     # return a NODE object
-    def getNode(self, col, row):
-        return self.terrain[col][row]
+    def getNode(self, coordinates):
+        return self.terrain[coordinates[0]][coordinates[1]]
 
     # Informational 2-D map of terrain
     def __repr__(self):
@@ -35,37 +35,31 @@ class Terrain:
         return buf
 
     def initHeuristic(self, heuristic):
-        if heuristic == 1:
-            for line in self.terrain:
-                for node in line:
+        for line in self.terrain:
+            for node in line:
+                diffX = abs(node.pos[0] - self.goal[0])
+                diffY = abs(node.pos[1] - self.goal[1])
+        
+                if heuristic == 1:
                     node.h_score = 0
     
-        elif heuristic == 2:
-            for line in self.terrain:
-                for node in line:
-                    diffX = abs(node.col - self.goal[0])
-                    diffY = abs(node.row - self.goal[1])
+                elif heuristic == 2:
                     node.h_score = min(diffX, diffY)
     
-        elif heuristic == 3:
-            for line in self.terrain:
-                for node in line:
-                    diffX = abs(node.col - self.goal[0])
-                    diffY = abs(node.row - self.goal[1])
+                elif heuristic == 3:
                     node.h_score = max(diffX, diffY)
         
-        elif heuristic == 4:
-            for line in self.terrain:
-                for node in line:
-                    diffX = abs(node.col - self.goal[0])
-                    diffY = abs(node.row - self.goal[1])
+                elif heuristic == 4:
                     node.h_score = diffX + diffY
-        elif heuristic == 5:
-            print 'heuristic 5'
-        elif heuristic == 6:
-            print 'heuristic 6'
-        else:
-            print 'Invalid numbah'
+
+                elif heuristic == 5:
+                    print 'heuristic 5'
+
+                elif heuristic == 6:
+                    print 'heuristic 6'
+
+                else:
+                    print 'Invalid numbah'
 
     # N, E, S, W
     def initMovableNeighbors(self): # TODO: William will take this
@@ -76,12 +70,5 @@ class Terrain:
     def initAllNeighbors(self): # TODO: Jetro
         arr = []
         return arr
-
-
-
-
-
-
-
 
 
