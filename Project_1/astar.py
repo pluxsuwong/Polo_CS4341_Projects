@@ -91,8 +91,8 @@ while not openSet: # while openSet is not empty
 
     openSet.remove(baymax.curNode)
     closedSet.append(baymax.curNode)
-    curNode = terrain.getNode(baymax.curNode)
-    for node in baymax.curNode:
-        # ...
+    curNodeNeighbors = terrain.getNode(baymax.curNode).movableNeighbors
+    for node in curNodesNeighbors:
+        
 
 # printResults(results)
