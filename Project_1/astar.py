@@ -41,6 +41,18 @@ for line in fd:
     tempT.append(new_row)
     row += 1
 
+# ========================================= Helper Functions =========================================
+
+def getLowestNode(terrainMap, oSet):
+    lowestNodeInOpenSet = Node.Node(-1, -1, float("int"))
+    if oSet:
+        for node in openSet:
+            if terrain.getNode(node[0], node[1]).f_score < lowestNodeInOpenSet:
+                lowestNodeInOpenSet = terrain.getNode(node[0], node[1])
+        return lowestNodeInOpenSet
+    else:
+        print 'The Set is empty'
+
 # ========================================= A* Search =========================================
 # Tri and Peter will work on astar
 
@@ -53,15 +65,13 @@ terrain.initHeuristic(heuristic)
 # Initialize the robot
 baymax = Robot.Robot(terrain.start)
 
-closedSet = [] # Stores tuple
-openSet = [terrain.start] # Stores tuple
+closedSet = [] # List of tuples
+openSet = [terrain.start] # List of tuples
 
-while not openSet:
-    
-    lowestNodeInOpenSet = float("inf")
-    for node in openSet:
-        if terrain.getNode(node[0], node[1]).f_score < lowestNodeInOpenSet:
-            lowestNodeInOpenSet = terrain.getNode(node[0], node[1]).f_score
+while not openSet: # while openSet is not empty
+    nodeWithLowestF = getLowestNode(terrain, openSet) # get the node with the lowest f score in the openSet
+
+
 
 
 

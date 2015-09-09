@@ -19,12 +19,12 @@ class Robot: # Baymax
     # ============================================ Bash ============================================
     # Agent charges forward 1 unit without changing its facing direction.
     # After bash action, agent's next action is forward movement of 1 unit for stabilization
-    # Time required: 4. 3 for bashing (ignores terrain complexity) and 1 for compulsory forward movement for stabilization
+    # Time required: 3 (ignores terrain complexity), and the next action taken by the agent must be Forward.
     def bash(self, terrain):
         tempNode1 = terrain.getNode(self.curNode).nextNode(self.direction)
         tempNode2 = tempNode1.nextNode(self.direction)
         self.curNode = tempNode2.getCoord()
-        self.timeTraveled += 4
+        self.timeTraveled += 3 + terrain.getNode(self.curNode[0], self.curNode[1])
         print('bash')
     
     
@@ -95,6 +95,9 @@ class Robot: # Baymax
         # Time taken = 4
         self.timeTraveled += 4
 
+    # ============================================ Get Neighbor with lowest cost ============================================
+    def getNeighborWithLowestCost(self):
+        for node in
 
 
 
