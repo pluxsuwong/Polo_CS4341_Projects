@@ -58,7 +58,7 @@ class Terrain:
                     node.h_score = diffX + diffY
 
                 elif heuristic == 5:
-                    print 'heuristic 5'
+                    node.h_score = diffX*diffY
 
                 elif heuristic == 6:
                     print 'heuristic 6'
