@@ -69,23 +69,23 @@ class Terrain:
         
         for line in self.terrain:
             for node in line:
-                northNeighbor = (node.pos.col, node.pos.row-1)
-                eastNeighbor = (node.pos.col+1, node.pos.row)
-                southNeighbor = (node.pos.col, node.pos.row+1)
-                westNeighbor = (node.pos.col-1, node.pos.row)
+                northNeighbor = (node.pos[0], node.pos[1]-1)  # node.pos[0] = col   # node.pos[1] = row
+                eastNeighbor = (node.pos[0]+1, node.pos[1])
+                southNeighbor = (node.pos[0], node.pos[1]+1)
+                westNeighbor = (node.pos[0]-1, node.pos[1])
 
                 # logic for setting None neighbors if out of bounds
 
-                if (node.pos.row < 1):
+                if (node.pos[1] < 1):
                     northNeighbor = None
 
-                if (node.pos.col >= terrainCols):
+                if (node.pos[0] >= terrainCols):
                     eastNeighbor = None
 
-                if (node.pos.row >= terrainRows):
+                if (node.pos[1] >= terrainRows):
                     southNeighbor = None
 
-                if (node.pos.col < 1):
+                if (node.pos[0] < 1):
                     westNeighbor = None
                     
                 
@@ -99,33 +99,33 @@ class Terrain:
         
         for line in self.terrain:
             for node in line:
-                northNeighbor = (node.pos.col, node.pos.row-1)
-                eastNeighbor = (node.pos.col+1, node.pos.row)
-                southNeighbor = (node.pos.col, node.pos.row+1)
-                westNeighbor = (node.pos.col-1, node.pos.row)
-                northEastNeighbor = (node.pos.col+1, node.pos.row-1)
-                southEastNeighbor = (node.pos.col+1, node.pos.row+1)
-                southWestNeighbor = (node.pos.col-1, node.pos.row+1)
-                northWestNeighbor = (node.pos.col-1, node.pos.row-1)
+                northNeighbor = (node.pos[0], node.pos[1]-1)
+                eastNeighbor = (node.pos[0]+1, node.pos[1])
+                southNeighbor = (node.pos[0], node.pos[1]+1)
+                westNeighbor = (node.pos[0]-1, node.pos[1])
+                northEastNeighbor = (node.pos[0]+1, node.pos[1]-1)
+                southEastNeighbor = (node.pos[0]+1, node.pos[1]+1)
+                southWestNeighbor = (node.pos[0]-1, node.pos[1]+1)
+                northWestNeighbor = (node.pos[0]-1, node.pos[1]-1)
 
                 # logic for setting None neighbors if out of bounds
 
-                if (node.pos.row < 1):
+                if (node.pos[1] < 1):
                     northNeighbor = None
                     northWestNeighbor = None
                     northEastNeighbor = None
 
-                if (node.pos.col >= terrainCols):
+                if (node.pos[0] >= terrainCols):
                     eastNeighbor = None
                     northEastNeighbor = None
                     southEastNeighbor = None
 
-                if (node.pos.row >= terrainRows):
+                if (node.pos[1] >= terrainRows):
                     southNeighbor = None
                     southEastNeighbor = None
                     southWestNeighbor = None
 
-                if (node.pos.col < 1):
+                if (node.pos[0] < 1):
                     westNeighbor = None
                     northWestNeighbor = None
                     southWestNeighbor = None
