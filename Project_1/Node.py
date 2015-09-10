@@ -1,4 +1,3 @@
-import Robot
 import Terrain
 
 # This class represent a single node
@@ -11,7 +10,8 @@ class Node:
         self.g_score = float("inf")
         self.f_score = float("inf")
         self.parentNode = None # The node (tuple) that this node came from
-        self.parentAction = [] # Actions taken from parent -> current
+        self.parentActions = [] # Actions taken from parent -> current
+        self.robotBearing = [] # Bearing after parent actions
         self.allNeighbors = [] # List of all neighbors (tuples) of this node: N, E, S, W, NE, NW, SE, SW
         self.movableNeighbors = [] # List of 4 neighbors (tuples) that the robot can move to: N, E, S, W
 

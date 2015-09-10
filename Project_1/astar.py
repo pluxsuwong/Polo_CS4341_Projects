@@ -43,15 +43,29 @@ for line in fd:
 # ========================================= Helper Functions =========================================
 
 # Move robot to next node
-def moveRobot(robot, terrain, openSet):
+def lowestNode(terrain, openSet):
     if openSet:
-        lowestNode = openSet[0] # arbitrary initial node
+        lowestNodeInOS = openSet[0] # arbitrary initial node
         for node in openSet:
-            if terrain.getNode(node).f_score < lowestNode:
-                lowestNode = node
-        robot.curNode = lowestNode
+            if terrain.getNode(node).f_score < lowestNodeInOS:
+                lowestNodeInOS = node
+        return lowestNodeInOS
     else:
         print 'The Set is empty'
+
+# Return time cost of moving from curNode to neighbor
+def nodeMoveCost(terrain, inDirection, curNode, neighbor)
+
+# Recreates the optimal path
+def getMoveSet(terrain, finalNode):
+    moveSet = []
+    curNode = finalNode
+    prevNode = terrain.getNode(curNode).parentNode
+    while terrain.start != curNode:
+        # Note: parentAction should be stored [action, turn, ...], if at all
+        moveSet.extend(curNode.parentActions)
+        curNode = terrain.getNode(curNode).parentNode
+    return moveSet
 
 # Displays results to screen
 def printResults(results):
@@ -62,9 +76,8 @@ def printResults(results):
         print action
 
 # ========================================= A* Search =========================================
-# Tri and Peter will work on astar
 # Output variables
-# Path Score, Num of Actions, Num of Nodes in Closed List, Actions Taken
+# Path Score, Num of Actions, Num of Nodes in Closed Set, Actions Taken
 results = (0, 0, 0, [])
 
 # Initialize the terrain
@@ -73,33 +86,53 @@ terrain.initMovableNeighbors()
 terrain.initAllNeighbors()
 terrain.initHeuristic(heuristic)
 
-# Initialize the robot
-baymax = Robot.Robot(terrain.start)
-
 closedSet = [] # List of node tuples already evaluated
 openSet = [terrain.start] # List of node tuples to be evaluated
+movePath = []
 moveSet = []
 
 while not openSet: # while openSet is not empty
-    moveRobot(baymax, terrain, openSet) # actuate robot
+    # set current node to the node with the lowest f_score
+    curNode = lowestNode(terrain, openSet)
 
-    if baymax.curNode == terrain.goal:
-        results[0] = 100 - baymax.timeTraveled
+    # check if we're at our goal, or if we've run out of nodes to eval
+    if curNode == terrain.goal: # or curNode out of bounds
+        moveSet = getMoveSet(terrain, curNode).reverse()
+        results[0] = 100 - terrain.getNode(curNode).f_score
         results[1] = len(moveSet)
         results[2] = len(closedSet)
         results[3] = moveSet
         break
-    else:
-        moveSet.extend(baymax.curNode.parentAction)
+    elif not openSet:
+        print 'Open set is empty'
+        break
 
-    openSet.remove(baymax.curNode)
-    closedSet.append(baymax.curNode)
-    curNodeNeighbors = terrain.getNode(baymax.curNode).movableNeighbors
+    # remove the current node from the open set and place it in the closed set
+    openSet.remove(curNode)
+    closedSet.append(curNode)
+
+    curNodeNeighbors = terrain.getNode(curNode).movableNeighbors
+    # for each neighboring node of the current one
     for neighbor in curNodeNeighbors:
+        # if this specific neighbor has already been evaluated
         if closedSet.count(neighbor) > 0:
             continue
         
-        movCost = baymax.moveCost(neighbor)
-        gScoreBuf = curNode.g_score + movCost
+        # calculate the time cost of moving from the current node to the neighbor
+        movCost = nodeMoveCost(terrain, curNode, neighbor) ''''''
+        # calculate the potential total g_score 
+        gScoreBuf = terrain.getNode(curNode).g_score + movCost ''''''
 
-# printResults(results)
+        # if this specific neighbor is not yet in the open set 
+        # or a faster route to the node has been found
+        neighborNode = terrain.getNode(neighbor)
+        if openSet.count(neighbor) == 0 or gScoreBuf < neighborNode.g_score:
+            neighborNode.parentNode = curNode
+            neighborNode.g_score = gScoreBuf
+            neighborNode.f_score = neighborNode.g_score + neighborNode.h_score
+            # add this specific neighbor to the open set if it isn't there
+            if openSet.count(neighbor) == 0:
+                openSet.append(neighbor)
+
+print terrain
+printResults(results)
