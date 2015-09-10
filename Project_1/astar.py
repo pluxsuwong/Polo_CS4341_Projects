@@ -142,6 +142,7 @@ def printResults(results):
     print 'Score of Path: ' + str(results[0])
     print 'Number of Actions: ' + str(results[1])
     print 'Number of Nodes Expanded: ' + str(results[2])
+    print 'F: Forward, B: Bash, L: Turn Left, R: Turn Right'
     for action in results[3]:
         print action
 
