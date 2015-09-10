@@ -58,12 +58,17 @@ def lowestNode(terrain, openSet):
 dirDict = {'N': 0, 'E': 1, 'S': 2, 'W': 3}
 enumDirDict = {0: 'N', 1: 'E', 2: 'S', 3: 'W'}
 
-# Return time cost of moving from curNode to neighbor
+# Return time cost of moving to neighbor from curNode
 # Note: Really ghetto function
 def nodeMoveCost(terrain, curNode, neighbor):
+    # store current node object in variable
     cNode = terrain.getNode(curNode)
+    # translate c->n node direction to number
     movDirIndex = cNode.movableNeighbors.index(neighbor)
-    rawTurns = dirDict[cNode.robotBearing[-1]] - movDirIndex
+    # initial direction into node
+    curDir = dirDict[cNode.robotBearing]
+    # find number of necessary turns
+    rawTurns = movDirIndex - curDir
     turns = 0
     if rawTurns == 3:
         turns = -1
@@ -71,52 +76,49 @@ def nodeMoveCost(terrain, curNode, neighbor):
         turns = 1
     else:
         turns = rawTurns
+
     numTurns = abs(turns)
-    try:
-        nNode = terrain.getNode(neighbor)
-    except IndexError:
-        print neighbor
-        print terrain.getNode(curNode).movableNeighbors
-        sys.exit()
+    # store neighbor node object in variable
+    nNode = terrain.getNode(neighbor)
+    # cost for 1 turn
     cost_t = math.ceil(cNode.complexity/3)
+    # total cost for turns+fwd to get to neighbor
     cost_a = cost_t*numTurns + nNode.complexity
+    # total cost for turns+bash to get to neighbor
     cost_b = cost_t*numTurns + 3
+    # actions taken by parent to get to child buffer
     actions = []
-    directions = []
+
+    # add turns to 
     for i in range(0, numTurns):
         # store directions taken by parent to reach child
-        directions.append(enumDirDict[movDirIndex])
         if turns < 0:
             actions.append('L')
-            movDirIndex -= 1
-            if movDirIndex < 0:
-                movDirIndex = 3
         else:
             actions.append('R')
-            movDirIndex += 1
-            if movDirIndex > 3:
-                movDirIndex = 0
-    directions.append(enumDirDict[movDirIndex])
+    direction = enumDirDict[movDirIndex]
 
     try:
         nnNode = terrain.getNode(nNode.movableNeighbors[movDirIndex])
         # B+F is heuristically good and is cheaper than F+F
-        if nNode.h_score < nnNode.h_score and nNode.complexity <= 3:
+        if nNode.h_score <= nnNode.h_score and nNode.complexity <= 3:
             actions.append('F')
-            return (cost_a, actions, directions)
+            return (cost_a, actions, direction)
         else:
             actions.append('B')
-            return (cost_b, actions, directions)
+            return (cost_b, actions, direction)
     except TypeError:
         actions.append('F')
-        return (cost_a, actions, directions)
+        return (cost_a, actions, direction)
 
 # Recreates the optimal path
 def getMoveSet(terrain, finalNode):
     moveSet = []
     curNode = finalNode
+    print 'Recounting Path...'
     while terrain.start != curNode:
         # Note: action should be stored [action, turn, ...], if at all
+        print curNode
         moveSet.extend(list(reversed(terrain.getNode(curNode).parentActions)))
         curNode = terrain.getNode(curNode).parentNode
     return moveSet
@@ -135,12 +137,14 @@ def printResults(results):
 results = [0, 0, 0, []]
 # Initialize the terrain
 terrain = Terrain.Terrain(tempT, start, goal)
-startNode = terrain.getNode(start)
-startNode.robotBearing.append('N')
-terrain.setNode(start, startNode)
 terrain.initMovableNeighbors()
 terrain.initAllNeighbors()
 terrain.initHeuristic(heuristic)
+startNode = terrain.getNode(start)
+startNode.robotBearing = 'N'
+startNode.g_score = float(0)
+startNode.f_score = float(startNode.g_score + startNode.h_score)
+terrain.setNode(start, startNode)
 
 closedSet = [] # List of node tuples already evaluated
 openSet = [terrain.start] # List of node tuples to be evaluated
