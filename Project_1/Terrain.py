@@ -62,13 +62,74 @@ class Terrain:
                     print 'Invalid numbah'
 
     # N, E, S, W
-    def initMovableNeighbors(self): # TODO: William will take this
-        arr = []
-        return arr
+    def initMovableNeighbors(self):
+
+        terrainRows = len(self.terrain)
+        terrainCols = len(self.terrain[0])
+        
+        for line in self.terrain:
+            for node in line:
+                northNeighbor = (node.pos.col, node.pos.row-1)
+                eastNeighbor = (node.pos.col+1, node.pos.row)
+                southNeighbor = (node.pos.col, node.pos.row+1)
+                westNeighbor = (node.pos.col-1, node.pos.row)
+
+                # logic for setting None neighbors if out of bounds
+
+                if (node.pos.row < 1):
+                    northNeighbor = None
+
+                if (node.pos.col >= terrainCols):
+                    eastNeighbor = None
+
+                if (node.pos.row >= terrainRows):
+                    southNeighbor = None
+
+                if (node.pos.col < 1):
+                    westNeighbor = None
+                    
+                
+            node.movableNeighbors = [northNeighbor,eastNeighbor,southNeighbor,westNeighbor]    
     
     # N, E, S, W, NE, NW, SE, SW
-    def initAllNeighbors(self): # TODO: Jetro
-        arr = []
-        return arr
+    def initAllNeighbors(self):
+
+        terrainRows = len(self.terrain)
+        terrainCols = len(self.terrain[0])
+        
+        for line in self.terrain:
+            for node in line:
+                northNeighbor = (node.pos.col, node.pos.row-1)
+                eastNeighbor = (node.pos.col+1, node.pos.row)
+                southNeighbor = (node.pos.col, node.pos.row+1)
+                westNeighbor = (node.pos.col-1, node.pos.row)
+                northEastNeighbor = (node.pos.col+1, node.pos.row-1)
+                southEastNeighbor = (node.pos.col+1, node.pos.row+1)
+                southWestNeighbor = (node.pos.col-1, node.pos.row+1)
+                northWestNeighbor = (node.pos.col-1, node.pos.row-1)
+
+                # logic for setting None neighbors if out of bounds
+
+                if (node.pos.row < 1):
+                    northNeighbor = None
+                    northWestNeighbor = None
+                    northEastNeighbor = None
+
+                if (node.pos.col >= terrainCols):
+                    eastNeighbor = None
+                    northEastNeighbor = None
+                    southEastNeighbor = None
+
+                if (node.pos.row >= terrainRows):
+                    southNeighbor = None
+                    southEastNeighbor = None
+                    southWestNeighbor = None
+
+                if (node.pos.col < 1):
+                    westNeighbor = None
+                    northWestNeighbor = None
+                    southWestNeighbor = None
+                
+            node.allNeighbors = [northNeighbor,eastNeighbor,southNeighbor,westNeighbor,northEastNeighbor,southhEastNeighbor,southWestNeighbor,northWestNeighbor]         
 
 
