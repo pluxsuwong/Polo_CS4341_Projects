@@ -58,12 +58,12 @@ class Terrain:
                     node.h_score = diffX + diffY
 
                 elif heuristic == 5:
-                    sumOfSquare = math.pow(diffX, 2) + math.pow(diffY, 2)
-                    node.h_score = math.sqrt(sumOfSquare)
+                    sumOfSquare = diffX + diffY + (diffX*diffY)%3
+                    node.h_score = sumOfSquare
 
                 elif heuristic == 6:
-                    sumOfSquare = math.pow(diffX, 2) + math.pow(diffY, 2)
-                    node.h_score = 3*(math.sqrt(sumOfSquare))
+                    sumOfSquare = diffX + diffY + (diffX*diffY)%3
+                    node.h_score = 3*sumOfSquare
 
                 else:
                     print 'Invalid numbah'
