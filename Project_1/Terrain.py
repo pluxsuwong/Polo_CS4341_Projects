@@ -9,6 +9,11 @@ class Terrain:
     def getNode(self, coordinates):
         return self.terrain[coordinates[0]][coordinates[1]]
 
+    # Setter for a node in the terrain
+    # set a NODE object
+    def setNode(self, coordinates, aNodeObj):
+        self.terrain[coordinates[0]][coordinates[1]] = aNodeObj
+
     # Informational 2-D map of terrain
     def __repr__(self):
         buf = ""

@@ -133,6 +133,7 @@ while not openSet: # while openSet is not empty
             # add this specific neighbor to the open set if it isn't there
             if openSet.count(neighbor) == 0:
                 openSet.append(neighbor)
+            terrain.setNode(neighborNode.pos, neighborNode)
 
 print terrain
 printResults(results)
