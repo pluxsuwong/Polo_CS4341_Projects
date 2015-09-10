@@ -10,10 +10,25 @@ class Node:
         self.g_score = float("inf")
         self.f_score = float("inf")
         self.parentNode = None # The node (tuple) that this node came from
-        self.actions = [] # Actions taken from parent <- current (at this node)
-        self.robotBearing = [] # Bearing before each action
+        self.parentActions = [] # Actions taken from parent -> current
+        self.robotBearing = [] # Bearing after each action ^
         self.allNeighbors = [] # List of all neighbors (tuples) of this node: N, E, S, W, NE, NW, SE, SW
         self.movableNeighbors = [] # List of 4 neighbors (tuples) that the robot can move to: N, E, S, W
+
+    # Information on Node
+    def __repr__(self):
+        buf = ""
+        buf += str(self.pos) + '\n'
+        buf += str(self.complexity) + '\n'
+        buf += str(self.h_score) + '\n'
+        buf += str(self.g_score) + '\n'
+        buf += str(self.f_score) + '\n'
+        buf += str(self.parentNode) + '\n'
+        buf += str(self.parentActions) + '\n'
+        buf += str(self.robotBearing) + '\n'
+        buf += str(self.allNeighbors) + '\n'
+        buf += str(self.movableNeighbors) + '\n'
+        return buf
 
     # This function takes in the direction, and returns the tuple according to the orientation
     def nextNode(self, direction):

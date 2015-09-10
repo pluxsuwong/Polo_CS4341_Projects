@@ -1,6 +1,7 @@
 import fileinput
 import re
 import sys
+import math
 import Node
 import Terrain
 
@@ -53,29 +54,70 @@ def lowestNode(terrain, openSet):
     else:
         print 'The Set is empty'
 
+# Dictionary for bearings
+dirDict = {'N': 0, 'E': 1, 'S': 2, 'W': 3}
+enumDirDict = {0: 'N', 1: 'E', 2: 'S', 3: 'W'}
+
 # Return time cost of moving from curNode to neighbor
+# Note: Really ghetto function
 def nodeMoveCost(terrain, curNode, neighbor):
-    cost_total = 0
-    nNode = terrain.getNode(neighbor)
     cNode = terrain.getNode(curNode)
-    turns = abs(cNode.robotBearing[0] - cNode.movableNeighbors.index(neighbor))
-    # add final direction to nNode
-    # compare total g values to decide to bash or fwd (and replace old move)
+    movDirIndex = cNode.movableNeighbors.index(neighbor)
+    rawTurns = dirDict[cNode.robotBearing[-1]] - movDirIndex
+    turns = 0
+    if rawTurns == 3:
+        turns = -1
+    elif rawTurns == -3:
+        turns = 1
+    else:
+        turns = rawTurns
+    numTurns = abs(turns)
+    try:
+        nNode = terrain.getNode(neighbor)
+    except IndexError:
+        print neighbor
+        print terrain.getNode(curNode).movableNeighbors
+        sys.exit()
     cost_t = math.ceil(cNode.complexity/3)
-    cost_a = cost_t*turns + nNode.complexity
-    cost_b = cost_t*turns + 3
-    
-        
-    return cost
+    cost_a = cost_t*numTurns + nNode.complexity
+    cost_b = cost_t*numTurns + 3
+    actions = []
+    directions = []
+    for i in range(0, numTurns):
+        # store directions taken by parent to reach child
+        directions.append(enumDirDict[movDirIndex])
+        if turns < 0:
+            actions.append('L')
+            movDirIndex -= 1
+            if movDirIndex < 0:
+                movDirIndex = 3
+        else:
+            actions.append('R')
+            movDirIndex += 1
+            if movDirIndex > 3:
+                movDirIndex = 0
+    directions.append(enumDirDict[movDirIndex])
+
+    try:
+        nnNode = terrain.getNode(nNode.movableNeighbors[movDirIndex])
+        # B+F is heuristically good and is cheaper than F+F
+        if nNode.h_score < nnNode.h_score and nNode.complexity <= 3:
+            actions.append('F')
+            return (cost_a, actions, directions)
+        else:
+            actions.append('B')
+            return (cost_b, actions, directions)
+    except TypeError:
+        actions.append('F')
+        return (cost_a, actions, directions)
 
 # Recreates the optimal path
 def getMoveSet(terrain, finalNode):
     moveSet = []
     curNode = finalNode
-    prevNode = terrain.getNode(curNode).parentNode
     while terrain.start != curNode:
         # Note: action should be stored [action, turn, ...], if at all
-        moveSet.extend(curNode.actions)
+        moveSet.extend(list(reversed(terrain.getNode(curNode).parentActions)))
         curNode = terrain.getNode(curNode).parentNode
     return moveSet
 
@@ -90,8 +132,7 @@ def printResults(results):
 # ========================================= A* Search =========================================
 # Output variables
 # Path Score, Num of Actions, Num of Nodes in Closed Set, Actions Taken
-results = (0, 0, 0, [])
-
+results = [0, 0, 0, []]
 # Initialize the terrain
 terrain = Terrain.Terrain(tempT, start, goal)
 startNode = terrain.getNode(start)
@@ -106,13 +147,14 @@ openSet = [terrain.start] # List of node tuples to be evaluated
 movePath = []
 moveSet = []
 
-while not openSet: # while openSet is not empty
+while openSet: # while openSet is not empty
     # set current node to the node with the lowest f_score
     curNode = lowestNode(terrain, openSet)
 
     # check if we're at our goal, or if we've run out of nodes to eval
     if curNode == terrain.goal: # or curNode out of bounds
-        moveSet = getMoveSet(terrain, curNode).reverse()
+        # add last move to final node
+        moveSet = list(reversed(getMoveSet(terrain, curNode)))
         results[0] = 100 - terrain.getNode(curNode).f_score
         results[1] = len(moveSet)
         results[2] = len(closedSet)
@@ -130,19 +172,26 @@ while not openSet: # while openSet is not empty
     # for each neighboring node of the current one
     for neighbor in curNodeNeighbors:
         # if this specific neighbor has already been evaluated
-        if closedSet.count(neighbor) > 0:
+        if closedSet.count(neighbor) > 0 or neighbor is None:
             continue
         
         # calculate the time cost of moving from the current node to the neighbor
-        movCost = nodeMoveCost(terrain, curNode, neighbor) ''''''
+        # tuple of (cost, [actions, ...])
+        movCost = nodeMoveCost(terrain, curNode, neighbor)
         # calculate the potential total g_score 
-        gScoreBuf = terrain.getNode(curNode).g_score + movCost ''''''
+        gScoreBuf = terrain.getNode(curNode).g_score 
+        if gScoreBuf == float("inf"):
+            gScoreBuf = movCost[0]
+        else:
+            gScoreBuf += movCost[0]
 
         # if this specific neighbor is not yet in the open set 
         # or a faster route to the node has been found
         neighborNode = terrain.getNode(neighbor)
         if openSet.count(neighbor) == 0 or gScoreBuf < neighborNode.g_score:
             neighborNode.parentNode = curNode
+            neighborNode.parentActions = movCost[1]
+            neighborNode.robotBearing = movCost[2]
             neighborNode.g_score = gScoreBuf
             neighborNode.f_score = neighborNode.g_score + neighborNode.h_score
             # add this specific neighbor to the open set if it isn't there
@@ -152,3 +201,4 @@ while not openSet: # while openSet is not empty
 
 print terrain
 printResults(results)
+

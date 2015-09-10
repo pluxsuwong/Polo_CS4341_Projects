@@ -7,12 +7,12 @@ class Terrain:
     # Getter for a node in the terrain
     # return a NODE object
     def getNode(self, coordinates):
-        return self.terrain[coordinates[0]][coordinates[1]]
+        return self.terrain[coordinates[1]][coordinates[0]]
 
     # Setter for a node in the terrain
     # set a NODE object
     def setNode(self, coordinates, aNodeObj):
-        self.terrain[coordinates[0]][coordinates[1]] = aNodeObj
+        self.terrain[coordinates[1]][coordinates[0]] = aNodeObj
 
     # Informational 2-D map of terrain
     def __repr__(self):
@@ -24,14 +24,14 @@ class Terrain:
             for i, n in enumerate(line):
                 buf += '|'
                 if self.start[0] == i and self.start[1] == j:
-                    buf += '{:>3}'.format('S')
+                    buf += '{:>2}'.format('S')
                 elif self.goal[0] == i and self.goal[1] == j:
-                    buf += '{:>3}'.format('G')
+                    buf += '{:>2}'.format('G')
                 else:
-                    buf += '{:>3}'.format(str(n.complexity))
-                buf += ', ' + '{:>3}'.format(str(n.h_score)) + ', ' + \
-                        '{:>3}'.format(str(n.g_score)) + ', ' + \
-                        '{:>3}'.format(str(n.f_score)) + '|'
+                    buf += '{:>2}'.format(str(n.complexity))
+                buf += ', ' + '{:>2}'.format(str(n.h_score)) + ', ' + \
+                        '{:>4}'.format(str(n.g_score)) + ', ' + \
+                        '{:>4}'.format(str(n.f_score)) + '|'
             buf += '\n'
             for n in line:
                 buf += ' ------------------ '
@@ -71,7 +71,6 @@ class Terrain:
 
         terrainRows = len(self.terrain)
         terrainCols = len(self.terrain[0])
-        
         for line in self.terrain:
             for node in line:
                 northNeighbor = (node.pos[0], node.pos[1]-1)  # node.pos[0] = col   # node.pos[1] = row
@@ -81,20 +80,20 @@ class Terrain:
 
                 # logic for setting None neighbors if out of bounds
 
-                if (node.pos[1] < 1):
+                if node.pos[1] < 1:
                     northNeighbor = None
 
-                if (node.pos[0] >= terrainCols):
+                if node.pos[0] >= terrainCols - 1:
                     eastNeighbor = None
 
-                if (node.pos[1] >= terrainRows):
+                if node.pos[1] >= terrainRows - 1:
                     southNeighbor = None
 
-                if (node.pos[0] < 1):
+                if node.pos[0] < 1:
                     westNeighbor = None
                     
                 
-            node.movableNeighbors = [northNeighbor,eastNeighbor,southNeighbor,westNeighbor]    
+                node.movableNeighbors = [northNeighbor,eastNeighbor,southNeighbor,westNeighbor]    
     
     # N, E, S, W, NE, NW, SE, SW
     def initAllNeighbors(self):
@@ -120,12 +119,12 @@ class Terrain:
                     northWestNeighbor = None
                     northEastNeighbor = None
 
-                if (node.pos[0] >= terrainCols):
+                if (node.pos[0] >= terrainCols - 1):
                     eastNeighbor = None
                     northEastNeighbor = None
                     southEastNeighbor = None
 
-                if (node.pos[1] >= terrainRows):
+                if (node.pos[1] >= terrainRows - 1):
                     southNeighbor = None
                     southEastNeighbor = None
                     southWestNeighbor = None
@@ -135,6 +134,6 @@ class Terrain:
                     northWestNeighbor = None
                     southWestNeighbor = None
                 
-            node.allNeighbors = [northNeighbor,eastNeighbor,southNeighbor,westNeighbor,northEastNeighbor,southhEastNeighbor,southWestNeighbor,northWestNeighbor]         
+                node.allNeighbors = [northNeighbor,eastNeighbor,southNeighbor,westNeighbor,northEastNeighbor,southEastNeighbor,southWestNeighbor,northWestNeighbor]         
 
 
