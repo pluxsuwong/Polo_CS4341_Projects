@@ -91,16 +91,23 @@ def nodeMoveCost(terrain, curNode, neighbor):
     cost_b = cost_t*numTurns + 3
     # actions taken by parent to get to child buffer
     actions = []
-
-    # add turns to 
-    for i in range(0, numTurns):
-        # store directions taken by parent to reach child
-        if turns < 0:
-            actions.append('L')
-        else:
-            actions.append('R')
     # store orientation
     direction = enumDirDict[movDirIndex]
+    
+    if cNode.parentActions.count('B') > 0:
+        if numTurns == 0:
+            actions.append('F')
+            return (cost_a, actions, direction)
+        else:
+            return None
+    else:
+        # add turns to 
+        for i in range(0, numTurns):
+            # store directions taken by parent to reach child
+            if turns < 0:
+                actions.append('L')
+            else:
+                actions.append('R')
     
     # DEBUG
     # print terrain.getNode(curNode)
@@ -186,22 +193,29 @@ while openSet: # while openSet is not empty
     # print 'Checkpoint 1: curNodeNeighbors = ' + str(curNodeNeighbors)
     # for each neighboring node of the current one
     for neighbor in curNodeNeighbors:
+        movCost = None
         # if this specific neighbor has already been evaluated
         if closedSet.count(neighbor) > 0 or neighbor is None:
             # print 'DEBUG: ' + str(neighbor) + ' was skipped'
             continue
+        
+        movCost = nodeMoveCost(terrain, curNode, neighbor)
+        
         # else:
         #     print 'DEBUG: ' + str(neighbor) + ' wasn\'t skipped'
         
         # calculate the time cost of moving from the current node to the neighbor
         # tuple of (cost, [actions, ...])
-        movCost = nodeMoveCost(terrain, curNode, neighbor)
+        
         # calculate the potential total g_score 
-        gScoreBuf = terrain.getNode(curNode).g_score 
-        if gScoreBuf == float("inf"):
-            gScoreBuf = movCost[0]
-        else:
-            gScoreBuf += movCost[0]
+        try:
+            gScoreBuf = terrain.getNode(curNode).g_score 
+            if gScoreBuf == float("inf"):
+                gScoreBuf = movCost[0]
+            else:
+                gScoreBuf += movCost[0]
+        except TypeError:
+            continue
 
         # if this specific neighbor is not yet in the open set 
         # or a faster route to the node has been found
