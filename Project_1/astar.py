@@ -115,7 +115,7 @@ def nodeMoveCost(terrain, curNode, neighbor):
     try:
         nnNode = terrain.getNode(nNode.movableNeighbors[movDirIndex])
         # B+F is heuristically good and is cheaper than F+F
-        if nNode.h_score > nnNode.h_score and nNode.complexity > 3:
+        if nNode.h_score >= nnNode.h_score and nNode.complexity > 3:
             actions.append('B')
             return (cost_b, actions, direction)
         else:
@@ -232,6 +232,6 @@ while openSet: # while openSet is not empty
                 openSet.append(neighbor)
             terrain.setNode(neighborNode.pos, neighborNode)
 
-print terrain
+# print terrain
 printResults(results)
 
