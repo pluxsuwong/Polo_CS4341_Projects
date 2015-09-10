@@ -42,7 +42,7 @@ for line in fd:
 
 # ========================================= Helper Functions =========================================
 
-# Move robot to next node
+# Return lowest complexity node in open set
 def lowestNode(terrain, openSet):
     if openSet:
         lowestNodeInOS = openSet[0] # arbitrary initial node
@@ -54,7 +54,19 @@ def lowestNode(terrain, openSet):
         print 'The Set is empty'
 
 # Return time cost of moving from curNode to neighbor
-def nodeMoveCost(terrain, inDirection, curNode, neighbor)
+def nodeMoveCost(terrain, curNode, neighbor):
+    cost_total = 0
+    nNode = terrain.getNode(neighbor)
+    cNode = terrain.getNode(curNode)
+    turns = abs(cNode.robotBearing[0] - cNode.movableNeighbors.index(neighbor))
+    # add final direction to nNode
+    # compare total g values to decide to bash or fwd (and replace old move)
+    cost_t = math.ceil(cNode.complexity/3)
+    cost_a = cost_t*turns + nNode.complexity
+    cost_b = cost_t*turns + 3
+    
+        
+    return cost
 
 # Recreates the optimal path
 def getMoveSet(terrain, finalNode):
@@ -62,8 +74,8 @@ def getMoveSet(terrain, finalNode):
     curNode = finalNode
     prevNode = terrain.getNode(curNode).parentNode
     while terrain.start != curNode:
-        # Note: parentAction should be stored [action, turn, ...], if at all
-        moveSet.extend(curNode.parentActions)
+        # Note: action should be stored [action, turn, ...], if at all
+        moveSet.extend(curNode.actions)
         curNode = terrain.getNode(curNode).parentNode
     return moveSet
 
@@ -82,6 +94,9 @@ results = (0, 0, 0, [])
 
 # Initialize the terrain
 terrain = Terrain.Terrain(tempT, start, goal)
+startNode = terrain.getNode(start)
+startNode.robotBearing.append('N')
+terrain.setNode(start, startNode)
 terrain.initMovableNeighbors()
 terrain.initAllNeighbors()
 terrain.initHeuristic(heuristic)
