@@ -48,8 +48,11 @@ def lowestNode(terrain, openSet):
     if openSet:
         lowestNodeInOS = openSet[0] # arbitrary initial node
         for node in openSet:
-            if terrain.getNode(node).f_score < lowestNodeInOS:
+            if terrain.getNode(node).f_score < terrain.getNode(lowestNodeInOS).f_score:
                 lowestNodeInOS = node
+                # print 'Replaced lowest node!'
+            # print "BUG: " + str(node) + ' had ' + str(terrain.getNode(node).f_score)
+        # print 'Checkpoint 2: ' + str(lowestNodeInOS) + " " + str(terrain.getNode(lowestNodeInOS).f_score)
         return lowestNodeInOS
     else:
         print 'The Set is empty'
@@ -81,7 +84,7 @@ def nodeMoveCost(terrain, curNode, neighbor):
     # store neighbor node object in variable
     nNode = terrain.getNode(neighbor)
     # cost for 1 turn
-    cost_t = math.ceil(cNode.complexity/3)
+    cost_t = math.ceil(float(cNode.complexity)/3)
     # total cost for turns+fwd to get to neighbor
     cost_a = cost_t*numTurns + nNode.complexity
     # total cost for turns+bash to get to neighbor
@@ -96,17 +99,21 @@ def nodeMoveCost(terrain, curNode, neighbor):
             actions.append('L')
         else:
             actions.append('R')
+    # store orientation
     direction = enumDirDict[movDirIndex]
+    
+    # DEBUG
+    # print terrain.getNode(curNode)
 
     try:
         nnNode = terrain.getNode(nNode.movableNeighbors[movDirIndex])
         # B+F is heuristically good and is cheaper than F+F
-        if nNode.h_score <= nnNode.h_score and nNode.complexity <= 3:
-            actions.append('F')
-            return (cost_a, actions, direction)
-        else:
+        if nNode.h_score > nnNode.h_score and nNode.complexity > 3:
             actions.append('B')
             return (cost_b, actions, direction)
+        else:
+            actions.append('F')
+            return (cost_a, actions, direction)
     except TypeError:
         actions.append('F')
         return (cost_a, actions, direction)
@@ -115,12 +122,12 @@ def nodeMoveCost(terrain, curNode, neighbor):
 def getMoveSet(terrain, finalNode):
     moveSet = []
     curNode = finalNode
-    print 'Recounting Path...'
+    # print 'Recounting Path...'
     while terrain.start != curNode:
         # Note: action should be stored [action, turn, ...], if at all
-        print curNode
         moveSet.extend(list(reversed(terrain.getNode(curNode).parentActions)))
         curNode = terrain.getNode(curNode).parentNode
+        # print terrain.getNode(curNode)
     return moveSet
 
 # Displays results to screen
@@ -154,6 +161,9 @@ moveSet = []
 while openSet: # while openSet is not empty
     # set current node to the node with the lowest f_score
     curNode = lowestNode(terrain, openSet)
+    # print 'Checkpoint 0: curNode = ' + str(curNode)
+    # print '              openSet = ' + str(openSet)
+    # print '              closedSet = ' + str(closedSet)
 
     # check if we're at our goal, or if we've run out of nodes to eval
     if curNode == terrain.goal: # or curNode out of bounds
@@ -173,11 +183,15 @@ while openSet: # while openSet is not empty
     closedSet.append(curNode)
 
     curNodeNeighbors = terrain.getNode(curNode).movableNeighbors
+    # print 'Checkpoint 1: curNodeNeighbors = ' + str(curNodeNeighbors)
     # for each neighboring node of the current one
     for neighbor in curNodeNeighbors:
         # if this specific neighbor has already been evaluated
         if closedSet.count(neighbor) > 0 or neighbor is None:
+            # print 'DEBUG: ' + str(neighbor) + ' was skipped'
             continue
+        # else:
+        #     print 'DEBUG: ' + str(neighbor) + ' wasn\'t skipped'
         
         # calculate the time cost of moving from the current node to the neighbor
         # tuple of (cost, [actions, ...])

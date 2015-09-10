@@ -18,16 +18,16 @@ class Node:
     # Information on Node
     def __repr__(self):
         buf = ""
-        buf += str(self.pos) + '\n'
-        buf += str(self.complexity) + '\n'
-        buf += str(self.h_score) + '\n'
-        buf += str(self.g_score) + '\n'
-        buf += str(self.f_score) + '\n'
-        buf += str(self.parentNode) + '\n'
-        buf += str(self.parentActions) + '\n'
-        buf += str(self.robotBearing) + '\n'
-        buf += str(self.allNeighbors) + '\n'
-        buf += str(self.movableNeighbors) + '\n'
+        buf += '(x, y): ' + str(self.pos) + '\n'
+        buf += 'C: ' + str(self.complexity) + '\n'
+        buf += 'H: ' + str(self.h_score) + '\n'
+        buf += 'G: ' + str(self.g_score) + '\n'
+        buf += 'F: ' + str(self.f_score) + '\n'
+        buf += 'parent: ' + str(self.parentNode) + '\n'
+        buf += 'p_acts: ' + str(self.parentActions) + '\n'
+        buf += 'facing: ' + str(self.robotBearing) + '\n'
+        # buf += 'all_N: ' + str(self.allNeighbors) + '\n'
+        # buf += 'mov_N: ' + str(self.movableNeighbors) + '\n'
         return buf
 
     # This function takes in the direction, and returns the tuple according to the orientation
