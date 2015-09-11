@@ -1,3 +1,11 @@
 Project 1 Write-Up
 Team Members: Saraj Pirasmepulkul, Tri Khuu, William Edor, Peerapat Luxsuwong
 
+The effective branching factor for each of the 5 worlds will be 4^n:
+World 1: 
+World 2: 
+World 3: 
+World 4: 
+World 5: 
+
+Heuristics 4 and 5 seemed to be more effective than 1, 2, and 3. 
