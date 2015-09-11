@@ -8,4 +8,4 @@ World 3:
 World 4: 
 World 5: 
 
-Heuristics 4 and 5 seemed to be more effective than 1, 2, and 3. 
+Heuristics 4 and 5 seemed to be more effective than 1, 2, and 3. Using Heuristics 1 and 2 generated the same series of movements, but heuristic 1 expanded more nodes than heuristic 2 did. Heuristic 5 expanded even less nodes than Heuristics 1 - 4.
