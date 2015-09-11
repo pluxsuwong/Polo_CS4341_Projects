@@ -2,10 +2,229 @@ Project 1 Write-Up
 Team Members: Saraj Pirasmepulkul, Tri Khuu, William Edor, Peerapat Luxsuwong
 
 The effective branching factor for each of the 5 worlds will be 4^n:
-World 1: 
-World 2: 
-World 3: 
-World 4: 
-World 5: 
+================== World 1: 20x20 ==================
+
+    Heuristic 1:
+        Score of Path: 64.0
+        Number of Actions: 17
+        Number of Nodes Expanded: 259
+
+    Heuristic 2:
+        Score of Path: 64.0
+        Number of Actions: 17
+        Number of Nodes Expanded: 188
+
+    Heuristic 3:
+        Score of Path: 64.0
+        Number of Actions: 17
+        Number of Nodes Expanded: 129
+
+    Heuristic 4:
+        Score of Path: 64.0
+        Number of Actions: 17
+        Number of Nodes Expanded: 95
+
+    Heuristic 5:
+        Score of Path: 64.0
+        Number of Actions: 17
+        Number of Nodes Expanded: 95
+
+    Heuristic 6:
+        Score of Path: 64.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 12
+
+            ====================================
+           |    Heuristic   |  Number of Nodes  |
+            ====================================
+           |        1       |       259         |
+           |        2       |       188         |
+           |        3       |       129         |
+           |        4       |        95         |
+           |        5       |        95         |
+           |        6       |        12         |
+            ====================================
+
+
+
+================== World 2: 30x30 ==================
+
+    Heuristic 1:
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 168
+
+    Heuristic 2:
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 128
+
+    Heuristic 3:
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 85
+
+
+    Heuristic 4:
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 67
+
+    Heuristic 5:
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 62
+
+    Heuristic 6:
+        Score of Path: 67.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 11
+
+            ====================================
+           |    Heuristic   |  Number of Nodes  |
+            ====================================
+           |        1       |       168         |
+           |        2       |       128         |
+           |        3       |        85         |
+           |        4       |        67         |
+           |        5       |        62         |
+           |        6       |        11         |
+            ====================================
+
+================== World 3: 35x25 ==================
+
+    Heuristic 1:
+        Score of Path: 26.0
+        Number of Actions: 29
+        Number of Nodes Expanded: 357
+
+    Heuristic 2:
+        Score of Path: 26.0
+        Number of Actions: 27
+        Number of Nodes Expanded: 250
+
+    Heuristic 3:
+        Score of Path: 26.0
+        Number of Actions: 29
+        Number of Nodes Expanded: 271
+
+    Heuristic 4:
+        Score of Path: 26.0
+        Number of Actions: 27
+        Number of Nodes Expanded: 189
+
+    Heuristic 5:
+        Score of Path: 26.0
+        Number of Actions: 27
+        Number of Nodes Expanded: 191
+
+    Heuristic 6:
+        Score of Path: 26.0
+        Number of Actions: 27
+        Number of Nodes Expanded: 66
+
+            ====================================
+           |    Heuristic   |  Number of Nodes  |
+            ====================================
+           |        1       |       357         |
+           |        2       |       250         |
+           |        3       |       271         |
+           |        4       |       189         |
+           |        5       |       191         |
+           |        6       |        66         |
+            ====================================
+
+
+================== World 4: 10x35 ==================
+
+    Heuristic 1:
+        Score of Path: 76.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 74
+
+    Heuristic 2:
+        Score of Path: 75.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 56
+
+    Heuristic 3:
+        Score of Path: 76.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 58
+
+    Heuristic 4:
+        Score of Path: 75.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 39
+
+    Heuristic 5:
+        Score of Path: 75.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 36
+
+    Heuristic 6:
+        Score of Path: 75.0
+        Number of Actions: 9
+        Number of Nodes Expanded: 9
+
+        ====================================
+       |    Heuristic   |  Number of Nodes  |
+        ====================================
+       |        1       |        74         |
+       |        2       |        56         |
+       |        3       |        58         |
+       |        4       |        39         |
+       |        5       |        36         |
+       |        6       |         9         |
+        ====================================
+
+
+================== World 5: 40x50 ==================
+
+    Heuristic 1:
+        Score of Path: -2.0
+        Number of Actions: 47
+        Number of Nodes Expanded: 1159
+
+    Heuristic 2:
+        Score of Path: -2.0
+        Number of Actions: 47
+        Number of Nodes Expanded: 890
+
+    Heuristic 3:
+        Score of Path: -3.0
+        Number of Actions: 49
+        Number of Nodes Expanded: 720
+
+    Heuristic 4:
+        Score of Path: -2.0
+        Number of Actions: 47
+        Number of Nodes Expanded: 553
+
+    Heuristic 5:
+        Score of Path: -3.0
+        Number of Actions: 49
+        Number of Nodes Expanded: 587
+
+    Heuristic 6:
+        Score of Path: -13.0
+        Number of Actions: 41
+        Number of Nodes Expanded: 190
+
+            ====================================
+           |    Heuristic   |  Number of Nodes  |
+            ====================================
+           |        1       |      1159         |
+           |        2       |       890         |
+           |        3       |       720         |
+           |        4       |       553         |
+           |        5       |       587         |
+           |        6       |       190         |
+            ====================================
+
 
 Heuristics 4 and 5 seemed to be more effective than 1, 2, and 3. Using Heuristics 1 and 2 generated the same series of movements, but heuristic 1 expanded more nodes than heuristic 2 did. Heuristic 5 expanded even less nodes than Heuristics 1 - 4.
+
+The number of nodes that Heuristic 6 expanded is much less than the number of node that Heuristic 5 expanded, therefore heuristic 6 takes less time to find a solution. However, the solution that Heuristic 6 found is not as optimal as the one that heuristic 5 return. Heuristic 6 is a few times more efficient than heuristic 5, but heuristic 5 is a few times more optimal than heuristic 6.
+
+
