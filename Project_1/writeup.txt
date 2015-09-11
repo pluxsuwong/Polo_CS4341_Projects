@@ -2,7 +2,52 @@ Project 1 Write-Up
 Team Members: Saraj Pirasmepulkul, Tri Khuu, William Edor, Peerapat Luxsuwong
 
 The effective branching factor for each of the 5 worlds will be 4^n:
-================== World 1: 20x20 ==================
+
+================== World 1: 10x35 ==================
+
+    Heuristic 1:
+        Score of Path: 76.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 74
+
+    Heuristic 2:
+        Score of Path: 75.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 56
+
+    Heuristic 3:
+        Score of Path: 76.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 58
+
+    Heuristic 4:
+        Score of Path: 75.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 39
+
+    Heuristic 5:
+        Score of Path: 75.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 36
+
+    Heuristic 6:
+        Score of Path: 75.0
+        Number of Actions: 9
+        Number of Nodes Expanded: 9
+
+        ====================================
+       |    Heuristic   |  Number of Nodes  |
+        ====================================
+       |        1       |        74         |
+       |        2       |        56         |
+       |        3       |        58         |
+       |        4       |        39         |
+       |        5       |        36         |
+       |        6       |         9         |
+        ====================================
+
+
+================== World 2: 20x20 ==================
 
     Heuristic 1:
         Score of Path: 64.0
@@ -45,51 +90,6 @@ The effective branching factor for each of the 5 worlds will be 4^n:
            |        6       |        12         |
             ====================================
 
-
-
-================== World 2: 30x30 ==================
-
-    Heuristic 1:
-        Score of Path: 71.0
-        Number of Actions: 16
-        Number of Nodes Expanded: 168
-
-    Heuristic 2:
-        Score of Path: 71.0
-        Number of Actions: 16
-        Number of Nodes Expanded: 128
-
-    Heuristic 3:
-        Score of Path: 71.0
-        Number of Actions: 16
-        Number of Nodes Expanded: 85
-
-
-    Heuristic 4:
-        Score of Path: 71.0
-        Number of Actions: 16
-        Number of Nodes Expanded: 67
-
-    Heuristic 5:
-        Score of Path: 71.0
-        Number of Actions: 16
-        Number of Nodes Expanded: 62
-
-    Heuristic 6:
-        Score of Path: 67.0
-        Number of Actions: 14
-        Number of Nodes Expanded: 11
-
-            ====================================
-           |    Heuristic   |  Number of Nodes  |
-            ====================================
-           |        1       |       168         |
-           |        2       |       128         |
-           |        3       |        85         |
-           |        4       |        67         |
-           |        5       |        62         |
-           |        6       |        11         |
-            ====================================
 
 ================== World 3: 35x25 ==================
 
@@ -135,48 +135,49 @@ The effective branching factor for each of the 5 worlds will be 4^n:
             ====================================
 
 
-================== World 4: 10x35 ==================
+================== World 4: 30x30 ==================
 
     Heuristic 1:
-        Score of Path: 76.0
-        Number of Actions: 14
-        Number of Nodes Expanded: 74
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 168
 
     Heuristic 2:
-        Score of Path: 75.0
-        Number of Actions: 14
-        Number of Nodes Expanded: 56
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 128
 
     Heuristic 3:
-        Score of Path: 76.0
-        Number of Actions: 14
-        Number of Nodes Expanded: 58
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 85
+
 
     Heuristic 4:
-        Score of Path: 75.0
-        Number of Actions: 14
-        Number of Nodes Expanded: 39
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 67
 
     Heuristic 5:
-        Score of Path: 75.0
-        Number of Actions: 14
-        Number of Nodes Expanded: 36
+        Score of Path: 71.0
+        Number of Actions: 16
+        Number of Nodes Expanded: 62
 
     Heuristic 6:
-        Score of Path: 75.0
-        Number of Actions: 9
-        Number of Nodes Expanded: 9
+        Score of Path: 67.0
+        Number of Actions: 14
+        Number of Nodes Expanded: 11
 
-        ====================================
-       |    Heuristic   |  Number of Nodes  |
-        ====================================
-       |        1       |        74         |
-       |        2       |        56         |
-       |        3       |        58         |
-       |        4       |        39         |
-       |        5       |        36         |
-       |        6       |         9         |
-        ====================================
+            ====================================
+           |    Heuristic   |  Number of Nodes  |
+            ====================================
+           |        1       |       168         |
+           |        2       |       128         |
+           |        3       |        85         |
+           |        4       |        67         |
+           |        5       |        62         |
+           |        6       |        11         |
+            ====================================
 
 
 ================== World 5: 40x50 ==================
