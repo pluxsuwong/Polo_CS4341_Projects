@@ -225,6 +225,8 @@ The effective branching factor for each of the 5 worlds will be 4^n:
 
 Heuristics 4 and 5 seemed to be more effective than 1, 2, and 3. Using Heuristics 1 and 2 generated the same series of movements, but heuristic 1 expanded more nodes than heuristic 2 did. Heuristic 5 expanded even less nodes than Heuristics 1 - 4.
 
+Heuristic 5 was calculated as V + H + (V*H)%3, where V is the vertical distance and H is the horizontal distance. This is because we want to take into account the fact that the robot has to turn, and a robot moving through a terrain that requires turning should have a greater heuristic than a robot that just moves in a straight line from start to goal. We were going to do V + H + 1, where the constant 1 is taking into consideration the turning, but that was inaccurate and does not consider different cases when the robot has to turn or it has to go straight. Basically, we want the number added to the Manhattan heuristic to be dynamic. 
+
 The number of nodes that Heuristic 6 expanded is much less than the number of node that Heuristic 5 expanded, therefore heuristic 6 takes less time to find a solution. However, the solution that Heuristic 6 found is not as optimal as the one that heuristic 5 return. Heuristic 6 is a few times more efficient than heuristic 5, but heuristic 5 is a few times more optimal than heuristic 6.
 
 
