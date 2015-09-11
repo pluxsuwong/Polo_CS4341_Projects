@@ -230,4 +230,4 @@ Heuristic 5 was calculated as V + H + (V*H)%3, where V is the vertical distance 
 
 The number of nodes that Heuristic 6 expanded is much less than the number of node that Heuristic 5 expanded, therefore heuristic 6 takes less time to find a solution. However, the solution that Heuristic 6 found is not as optimal as the one that heuristic 5 return. Heuristic 6 is a few times more efficient than heuristic 5, but heuristic 5 is a few times more optimal than heuristic 6.
 
-
+The branching factor is 4^(n), where n is the number of actions or maximum depth of the tree. For example, if the robot takes 5 steps from start to goal, then the depth of the tree is 5, and then the branching factory is 4^(5).
