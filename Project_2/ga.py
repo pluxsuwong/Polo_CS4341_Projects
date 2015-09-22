@@ -1,8 +1,11 @@
 import fileinput as fi
-import sys
 import random as rand
+import sys
+import time 
 
-# ==== Functions ====
+# ======== Functions ========
+
+# ==== Initialization ====
 
 # Genererate initial population
 def gen_init_pop(puzzle, fd, pop_size):
@@ -20,6 +23,7 @@ def gen_init_pop(puzzle, fd, pop_size):
 
     return population
 
+# Generate random string
 def rand_string(puzzle, GP):
     chars = GP
     string = []
@@ -28,22 +32,49 @@ def rand_string(puzzle, GP):
     # Puzzle 1
     if puzzle == 1:
         string_len = rand.randint(1, len(chars))
+        for i in range(0, string_len):
+            c = rand.choice(chars)
+            string.append(c)
+            chars.remove(c)
     # Puzzle 2
     elif puzzle == 2:
         string_len = 30
+        for i in range(0, string_len):
+            c = rand.choice(chars)
+            string.append(c)
+            chars.remove(c)
     # Puzzle 3
     elif puzzle == 3:
-        string_len = rand.randint(1, len(chars))
+        doors = []
+        lookouts = []
+        for i in chars:
+            if i[0] == "Door":
+                doors.append(i)
+                chars.remove(i)
+            elif i[0] == "Lookout":
+                lookouts.append(i)
+                chars.remove(i)
+
+        # First layer is a door
+        door = rand.choice(doors)
+        string.append(door)
+
+        string_len = rand.randint(0, len(chars))
+        for i in range(0, string_len):
+            c = rand.choice(chars)
+            string.append(c)
+            chars.remove(c)
+
+        # Last layer is a lookout
+        lookout = rand.choice(lookouts)
+        string.append(lookout)
+    # Invalid puzzle
     else:
         print "Error: Invalid Puzzle Number"
     
-    for i in range(0, string_len):
-        c = rand.choice(chars)
-        string.append(c)
-        chars.remove(c)
-
-    print "Generated: " + string
     return string
+
+# ==== Genetic Algorithm ====
 
 # Evaluate fitness of strings
 
@@ -53,7 +84,8 @@ def rand_string(puzzle, GP):
 
 # Mutate strings in population
 
-# ==== Format Input ====
+
+# ======== Format Input ========
 
 puzzle_num = int(sys.argv[1])
 fd = [line for line in fi.input(sys.argv[2])]
@@ -66,5 +98,10 @@ if puzzle_num == 1:
     T = int(fd[0])
     del fd[0]
 
-# ==== Run Genetic Algorithm ====
+# ======== Run Genetic Algorithm ========
 
+start_time = time.time()
+
+# convert run_time to time.time() format
+while time.time() < run_time:
+    # run code
