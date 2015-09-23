@@ -89,6 +89,24 @@ def no_repeats(element, genes):
             return False
     return True
 
+# Puzzle 2 rules
+def puzzle_2_score_calc(string):
+    
+    bin1 = string[:10]
+    bin2 = string[10:20]
+    
+    mul = 1.0
+    sum = 0.0
+    
+    for e in bin1:
+        mul *= e
+    
+    for e in bin2:
+        sum += e
+
+    return (mul + sum) / 2.0
+
+
 # Evaluate fitness of strings
 def evaluate(puzzle, target, population, genes):
     raw_pop = []
@@ -97,7 +115,7 @@ def evaluate(puzzle, target, population, genes):
     # Puzzle 1
     if puzzle == 1:
         for element in population:
-        # Calculate fitness value of element
+            # Calculate fitness value of element
             fitness_val = 0.0
             diff = target - float(sum(element))
             if diff < 0:
@@ -115,7 +133,21 @@ def evaluate(puzzle, target, population, genes):
             raw_pop.append(element_tup)
     # Puzzle 2
     elif puzzle == 2:
-        print '2'
+        for element in population:
+            fitness_val = 0.0
+            score = puzzle_2_score_calc(element)
+            if score < 0:
+                fitness_val = 0.0
+            else:
+                if no_repeats(element,genes):
+                    fitness_val = score**2
+                else:
+                    fitness_val = 0.0
+
+            total_value += fitness_val
+            element_tup = [fitness_val, element]
+
+            raw_pop.append(element_tup)
     # Puzzle 3
     elif puzzle == 3:
         print '3'
@@ -258,14 +290,14 @@ if puzzle_num == 1:
     target = float(fd[0])
     del fd[0]
 elif puzzle_num == 2:
-    print '2' 
+    target = ((10.0**10)+(10.0**2))/2
 elif puzzle_num == 3:
     print '3'
 else:
     print 'else'
 
 # Format fd
-if puzzle_num == 1:
+if puzzle_num == 1 or puzzle_num == 2:
     # Format layers
     for i in range(0, len(fd)):
         fd[i] = float(fd[i])
@@ -288,16 +320,25 @@ while time_elapsed <= run_time:
     # Time in seconds
     time_elapsed = time.time() - start_time
     temperature = math.exp((-4*time_elapsed/run_time)- 0.3)
+    # Evaluate
     a_list = evaluate(puzzle_num, target, population, fd)
-
-    if sum(a_list[-1][1]) > record:
-        record = sum(a_list[-1][1])
+    
+    # Record statistics
+    # TODO: modify so 1 2 3 be used
+    if puzzle_num == 1:
+        if sum(a_list[-1][1]) > record:
+            record = sum(a_list[-1][1])
         record_string = a_list[-1][1]
         record_gen = total_gen
-    b_list = select(a_list)
-    c_list = crossover(b_list, temperature)
-    d_list = mutate(c_list, fd, temperature)
-    population = d_list
+    
+    # Selection
+    # b_list = select(a_list)
+    # Crossover
+    # c_list = crossover(b_list, temperature)
+    # Mutation
+    # d_list = mutate(c_list, fd, temperature)
+    population = a_list
+    print population
     '''
     sol_num = 0
     for e in population:
