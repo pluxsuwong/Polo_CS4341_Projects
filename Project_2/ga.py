@@ -145,9 +145,9 @@ def evaluate(puzzle, target, population, genes):
 def select(ordered_pop):
     selected_pop = []
     cutoff = rand.random()
-    for x in range(0, 10):
+    for x in range(0, 5):
         selected_pop.append(ordered_pop[-1][1])
-    for x in range(10, len(ordered_pop)):
+    for x in range(5, len(ordered_pop)):
         for i in ordered_pop:
             if i[0] > cutoff:
                 selected_pop.append(i[1])
@@ -197,8 +197,8 @@ def crossover(parent_pop, temperature):
 
 # Mutate strings in population
 def mutate(children_pop, genes, temperature):
-    print "Before: " + str(len(children_pop))
-    print children_pop
+    # print "Before: " + str(len(children_pop))
+    # print children_pop
     mutated_pop = []
     flag = 0
     for string in children_pop:
@@ -219,16 +219,20 @@ def mutate(children_pop, genes, temperature):
             mutated_pop.append(string_buf)
         else:
             mutated_pop.append(string)
-    print "After: " + str(len(mutated_pop))
-    print mutated_pop
+    # print "After: " + str(len(mutated_pop))
+    # print mutated_pop
     return mutated_pop
 
 # ==== Print Stats ====
-def print_stats(top_score, ts_gen, total_gen):
+def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
     # best score
     print "Top Score: " + str(top_score)
-    # best score gen
-    print "Top Score Generation: " + str(ts_gen)
+    # first best string
+    print "First Top String: " + str(top_str)
+    # first best score gen
+    print "First Top Score Generation: " + str(ts_gen)
+    # final best string
+    print "Final Top String: " + str(f_top_str)
     # total gen
     print "Total Generations: " + str(total_gen)
 
@@ -262,6 +266,7 @@ if puzzle_num == 1:
 time_elapsed = 0
 temperature = 0
 record = -1
+record_string = []
 record_gen = 0
 total_gen = 0
 start_time = time.time()
@@ -269,25 +274,25 @@ a_list = []
 b_list = []
 c_list = []
 d_list = []
-population = gen_init_pop(puzzle_num, fd, 100)
+population = gen_init_pop(puzzle_num, fd, 20)
 
 while time_elapsed <= run_time:
     # Time in seconds
     time_elapsed = time.time() - start_time
-    temperature = math.exp(-0.4*time_elapsed - 0.3)
+    temperature = math.exp((-4*time_elapsed/run_time)- 0.3)
     a_list = evaluate(puzzle_num, target, population, fd)
 
     if sum(a_list[-1][1]) > record:
         record = sum(a_list[-1][1])
+        record_string = a_list[-1][1]
         record_gen = total_gen
     b_list = select(a_list)
     c_list = crossover(b_list, temperature)
-    # print c_list
-    # print ""
     d_list = mutate(c_list, fd, temperature)
     population = d_list
     # print temperature
     total_gen += 1
-    # run code
 
-print_stats(record, record_gen, total_gen)
+print ''
+final_string = population[0]
+print_stats(record, record_string, final_string, record_gen, total_gen)
