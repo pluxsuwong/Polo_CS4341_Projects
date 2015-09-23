@@ -235,7 +235,15 @@ def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
     print "Final Top String: " + str(f_top_str)
     # total gen
     print "Total Generations: " + str(total_gen)
-
+    '''
+    # stable solutions over time
+    print "Stable Strings v.s. Time"
+    for e in data_set:
+        print "Generation " + str(e[0]) + ":\t",
+        for i in range(0, e[1]):
+            print "*",
+        print ''
+    '''
 # ======== Format Input ========
 
 puzzle_num = int(sys.argv[1])
@@ -290,7 +298,16 @@ while time_elapsed <= run_time:
     c_list = crossover(b_list, temperature)
     d_list = mutate(c_list, fd, temperature)
     population = d_list
+    '''
+    sol_num = 0
+    for e in population:
+        if sum(e) == record:
+            sol_num += 1
     # print temperature
+    if total_gen % 2000 == 0:
+        sol_tup = (total_gen, sol_num)
+        sol_tally.append(sol_tup)
+    '''
     total_gen += 1
 
 print ''
