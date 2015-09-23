@@ -151,7 +151,8 @@ def evaluate(puzzle, target, population, genes):
     # Puzzle 3
     elif puzzle == 3:
         print '3'
-    else: 
+        # Peter <---------------------------------------------------------------------------
+    else:
         print "Error: In fitness_function() - Invalid Puzzle Number"
 
     # print raw_pop
@@ -174,7 +175,8 @@ def evaluate(puzzle, target, population, genes):
 
 # Select strings from old population to create new population
 # Roulette selection
-def select(ordered_pop):
+def select(ordered_pop, puzzle):
+    if puzzle == 1:
     selected_pop = []
     cutoff = rand.random()
     for x in range(0, 5):
@@ -189,8 +191,17 @@ def select(ordered_pop):
     # print ""
     return selected_pop
 
+    elif puzzle == 2:
+        # Will write this <---------------------------------------------------------------------------
+    elif puzzle == 3:
+        # Will write this <---------------------------------------------------------------------------
+    else:
+        print "Error: invalid puzzle in Select"
+
+
 # Crossover between strings in population
-def crossover(parent_pop, temperature):
+def crossover(parent_pop, temperature, puzzle):
+    if puzzle == 1:
     children_pop = []
     string_buf = []
     flag = 0
@@ -227,10 +238,18 @@ def crossover(parent_pop, temperature):
 
     return children_pop
 
+    elif puzzle == 2:
+        # Tri write this (using partial crossover )    <---------------------------------------------------------------------------
+    elif puzzle == 3:
+        # Tri write this                               <---------------------------------------------------------------------------
+    else:
+        print "Error: Invalid puzzle in Crossover"
+
 # Mutate strings in population
-def mutate(children_pop, genes, temperature):
+def mutate(children_pop, genes, temperature, puzzle):
     # print "Before: " + str(len(children_pop))
     # print children_pop
+    if puzzle == 1:
     mutated_pop = []
     flag = 0
     for string in children_pop:
@@ -254,6 +273,12 @@ def mutate(children_pop, genes, temperature):
     # print "After: " + str(len(mutated_pop))
     # print mutated_pop
     return mutated_pop
+    elif puzzle == 2:
+        # Jetro write this part <---------------------------------------------------------------------------
+    elif puzzle == 3:
+        # Jetro wirte this part (similar to 1) <---------------------------------------------------------------------------
+    else:
+        print "Error: Invalid Puzzle in Mutation"
 
 # ==== Print Stats ====
 def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
