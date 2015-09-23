@@ -112,12 +112,14 @@ def fitness_function(puzzle, target, population):
     for i in range(0, len(raw_pop)):
         raw_pop[i][0] /= total_value
     # Organize elements by fitness values
-    sorted(raw_pop, key = itemgetter(0))
+    raw_pop.sort(key = lambda x: x[0])
     print "Before Accum: " + str(raw_pop)
+    print ""
     # Accumulate element fitness values
     for i in range(1, len(raw_pop)):
         raw_pop[i][0] += raw_pop[i - 1][0]
     print "After Accum: " + str(raw_pop)
+    print ""
     return raw_pop
 
 # Evaluate fitness of strings
