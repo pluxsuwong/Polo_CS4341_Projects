@@ -412,21 +412,34 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
                 temporary_value = string_buf[m_index1]
                 string_buf[m_index1] = string_buf[m_index1+20]
                 string_buf[m_index1+20] = temporary_value
-                
+
                 #this is for bin 2
                 temporary_value2 = string_buf[m_index2]
                 string_buf[m_index2] = string_buf[m_index2+10]
                 string_buf[m_index2+10] = temporary_value2
-                
+
                 mutated_pop.append(string_buf)
             else:
                 mutated_pop.append(string)
+        
     elif puzzle == 3:
-        # Jetro wirte this part (similar to 1) <------------------------------------------------------------
-        return
+         for string in children_pop:
+            m_index = 0
+            if string:
+                m_index = rand.randint(0, len(string) - 1)
+            m_chance = rand.random()
+            string_buf = []
+            if m_chance > 1 - temperature:
+                new_gene = rand.choice(genes)
+                string_buf += string[:m_index]
+                string_buf.append(new_gene)
+                string_buf += string[m_index + 1:]
+                mutated_pop.append(string_buf)
+            else:
+                mutated_pop.append(string)
+                
     else:
         print "Error: Invalid Puzzle in Mutation"
-        return
 
     return mutated_pop
 
