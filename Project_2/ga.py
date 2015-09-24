@@ -242,7 +242,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
     for i in range(0, fit_num):
         children_pop.append(parent_pop.pop(0))
 
-    if puzzle == 1:
+    if puzzle == 1 or PUZZLE == 3:
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
@@ -330,15 +330,33 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
         if string_buf:
             children_pop.append(string_buf)
 
-    elif puzzle == 3:
-        # Tri write this                               <---------------------------------------------------------------------------
+#    elif puzzle == 3:
+#        # Tri write this                               <---------------------------------------------------------------------------
 #        string_buf = []
 #        rand.shuffle(parent_pop)
 #        for string in parent_pop:
 #            if co_chance > 1 - temperature:
 #                if not string_buf:
-
-        return
+#                    string_buf = string
+#                else:
+#                    a_string = string_buf
+#                    b_string = string
+#                        
+#                    a_index = rand.randint(0, len(a_string))
+#                    b_index = rand.randint(0, len(b_string))
+#                        
+#                    c_string = a_string[:a_index] + b_string[b_index:]
+#                    d_string = a_string[a_index:] + b_string[:b_index]
+#
+#                    children_pop.append(c_string)
+#                    children_pop.append(d_string)
+#        
+#                    string_buf = []
+#            else:
+#                children_pop.append(string)
+#
+#        if string_buf:
+#            children_pop.append(string_buf)
     else:
         print "Error: Invalid puzzle in Crossover"
         return
@@ -504,8 +522,8 @@ while time_elapsed <= run_time:
     # Crossover
     c_list = crossover(b_list, temperature, puzzle_num, elite_num)
     # Mutation
-    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
-    population = d_list
+    # d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
+    population = c_list
     print population
     # print ''
     # Collect statistics
