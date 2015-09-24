@@ -337,8 +337,18 @@ def collect_stats(generation, puzzle_num, population, stat_sheet):
     b_performance = 0
     w_performance = 0
     m_performance = 0
-
-    
+    m_index = int(len(population)/2)
+    ordered_pop = []
+    for i in range(0, len(population)):
+        entry_string = population[i]
+        if puzzle_num == 1:
+            entry_score = puzzle_1_score_calc(entry_string, genes, target)
+        elif puzzle_num == 2:
+            entry_score = puzzle_2_score_calc(entry_string, genes)
+        elif puzzle_num == 3:
+            entry_score = puzzle_3_score_calc(entry_string, genes)
+        entry_tup = [entry_score, entry_string]
+        ordered_pop.append(entry_yup)
 
     stat_entry.append(generation)
     stat_entry.append(b_performance)
