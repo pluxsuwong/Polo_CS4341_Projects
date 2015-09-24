@@ -4,6 +4,13 @@ from operator import itemgetter
 import math
 import sys
 import time 
+import csv
+
+# ======== Program Constants ========
+
+P_SIZE = 20 # USER INPUT
+# 3 - both, 2 - elitism, 1 - culling, 0 - none
+FIT_MODE = 1 # USER INPUT
 
 # ======== Functions ========
 
@@ -145,7 +152,7 @@ def puzzle_3_score_calc(tower):
     return score
 
 # Evaluate fitness of strings
-def evaluate(puzzle, target, population, genes):
+def evaluate(puzzle, target, population, genes, fit_num):
     raw_pop = []
     total_value = 0.0
 
@@ -176,6 +183,10 @@ def evaluate(puzzle, target, population, genes):
 
     # Organize elements by fitness values
     raw_pop.sort(key = lambda x: x[0])
+    # Cull bad strings
+    for i in range(0, fit_num):
+        total_value -= raw_pop[i][0]
+        raw_pop[i][0] = 0
     # Accumulate element fitness values
     for i in range(1, len(raw_pop)):
         raw_pop[i][0] += raw_pop[i - 1][0]
@@ -193,19 +204,13 @@ def evaluate(puzzle, target, population, genes):
 
 # Select strings from old population to create new population
 # Roulette selection
-def select(ordered_pop):
+def select(ordered_pop, fit_num):
     selected_pop = []
     cutoff = rand.random()
-
-    # 2 - elitism, 0 - non_elitism
-    flag = 2
-    fit_num = 0
-    if flag == 2:
-        fit_num = 5
     
     # Elitism guarantees survival of fittest
     for x in range(0, fit_num):
-        selected_pop.append(ordered_pop[-1][1])
+        selected_pop.append(ordered_pop[-x-1][1])
     for x in range(fit_num, len(ordered_pop)):
         for i in ordered_pop:
             if i[0] > cutoff:
@@ -216,23 +221,15 @@ def select(ordered_pop):
     return selected_pop
 
 # Crossover between strings in population
-def crossover(parent_pop, temperature, puzzle):
+def crossover(parent_pop, temperature, puzzle, fit_num):
+    children_pop = []
+    for i in range(0, fit_num):
+        children_pop.append(parent_pop.pop(0))
+
     if puzzle == 1:
-        children_pop = []
         string_buf = []
-
-        # 2 - elitism, 0 - non_elitism
-        flag = 2
-        if flag == 2:
-            for i in range(0, 2):
-                flag -= 1
-                children_pop.append(parent_pop[0])
-
         rand.shuffle(parent_pop)
         for string in parent_pop:
-            if flag < 2:
-                flag += 1
-                continue
             co_chance = rand.random()
             if co_chance > 1 - temperature:
                 if not string_buf:
@@ -259,26 +256,25 @@ def crossover(parent_pop, temperature, puzzle):
 
     elif puzzle == 2:
         # Tri write this (using partial crossover )    <---------------------------------------------------------------------------
+        return
     elif puzzle == 3:
         # Tri write this                               <---------------------------------------------------------------------------
+        return
     else:
         print "Error: Invalid puzzle in Crossover"
+        return
     
     return children_pop
     
 
 # Mutate strings in population
-def mutate(children_pop, genes, temperature, puzzle):
+def mutate(children_pop, genes, temperature, puzzle, fit_num):
+    mutated_pop = []
+    for i in range(0, fit_num):
+        mutated_pop.append(children_pop.pop(0))
+    
     if puzzle == 1:
-        mutated_pop = []
-        
-        # 2 - elitism, 0 - non_elitism
-        flag = 2
         for string in children_pop:
-            if flag > 0:
-                flag -= 1
-                mutated_pop.append(children_pop[0])
-                continue
             m_index = 0
             if string:
                 m_index = rand.randint(0, len(string) - 1)
@@ -295,14 +291,18 @@ def mutate(children_pop, genes, temperature, puzzle):
     
     elif puzzle == 2:
         # Jetro write this part <---------------------------------------------------------------------------
+        return
     elif puzzle == 3:
-        # Jetro wirte this part (similar to 1) <---------------------------------------------------------------------------
+        # Jetro wirte this part (similar to 1) <------------------------------------------------------------
+        return
     else:
         print "Error: Invalid Puzzle in Mutation"
+        return
 
     return mutated_pop
 
 # ==== Print Stats ====
+
 def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
     # best score
     print "Top Score: " + str(top_score)
@@ -323,6 +323,12 @@ def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
             print "*",
         print ''
     '''
+
+# ==== Collect Statistics ====
+
+def collect_stats(population):
+    return []
+
 # ======== Format Input ========
 
 puzzle_num = int(sys.argv[1])
@@ -350,6 +356,17 @@ else:
     sys.exit()
 
 # ======== Run Genetic Algorithm ========
+
+elite_num = 0
+cull_num = 0
+if FIT_MODE == 1:
+    cull_num = int(P_SIZE/5) + 1
+elif FIT_MODE == 2:
+    elite_num = int(P_SIZE/5) + 1
+elif FIT_MODE == 3:
+    cull_num = int(P_SIZE/5) + 1
+    elite_num = cull_num
+
 time_elapsed = 0
 temperature = 0
 record = -1
@@ -361,14 +378,14 @@ a_list = []
 b_list = []
 c_list = []
 d_list = []
-population = gen_init_pop(puzzle_num, fd, 20)
+population = gen_init_pop(puzzle_num, fd, P_SIZE)
 
 while time_elapsed <= run_time:
     # Time in seconds
     time_elapsed = time.time() - start_time
-    temperature = math.exp((-4*time_elapsed/run_time)- 0.3)
+    temperature = math.exp((-4*time_elapsed/run_time) - 0.3)
     # Evaluate
-    a_list = evaluate(puzzle_num, target, population, fd)
+    a_list = evaluate(puzzle_num, target, population, fd, cull_num)
     
     # Record statistics
     score = 0.0
@@ -387,13 +404,14 @@ while time_elapsed <= run_time:
         record_gen = total_gen
     
     # Selection
-    # b_list = select(a_list)
+    b_list = select(a_list, elite_num)
     # Crossover
-    # c_list = crossover(b_list, temperature)
+    c_list = crossover(b_list, temperature, puzzle_num, elite_num)
     # Mutation
-    # d_list = mutate(c_list, fd, temperature)
-    population = a_list
+    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
+    population = d_list
     print population
+    print ''
     '''
     sol_num = 0
     for e in population:
