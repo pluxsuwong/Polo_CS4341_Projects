@@ -218,46 +218,44 @@ def select(ordered_pop):
 # Crossover between strings in population
 def crossover(parent_pop, temperature, puzzle):
     if puzzle == 1:
-    children_pop = []
-    string_buf = []
+        children_pop = []
+        string_buf = []
 
-    # 2 - elitism, 0 - non_elitism
-    flag = 2
-    if flag == 2:
-        for i in range(0, 2):
-            flag -= 1
-            children_pop.append(parent_pop[0])
+        # 2 - elitism, 0 - non_elitism
+        flag = 2
+        if flag == 2:
+            for i in range(0, 2):
+                flag -= 1
+                children_pop.append(parent_pop[0])
 
-    rand.shuffle(parent_pop)
-    for string in parent_pop:
-        if flag < 2:
-            flag += 1
-            continue
-        co_chance = rand.random()
-        if co_chance > 1 - temperature:
-            if not string_buf:
-                string_buf = string
+        rand.shuffle(parent_pop)
+        for string in parent_pop:
+            if flag < 2:
+                flag += 1
+                continue
+            co_chance = rand.random()
+            if co_chance > 1 - temperature:
+                if not string_buf:
+                    string_buf = string
+                else:
+                    a_string = string_buf
+                    b_string = string
+                    
+                    a_index = rand.randint(0, len(a_string))
+                    b_index = rand.randint(0, len(b_string))
+
+                    c_string = a_string[:a_index] + b_string[b_index:]
+                    d_string = a_string[a_index:] + b_string[:b_index]
+
+                    children_pop.append(c_string)
+                    children_pop.append(d_string)
+                    
+                    string_buf = []
             else:
-                a_string = string_buf
-                b_string = string
-                
-                a_index = rand.randint(0, len(a_string))
-                b_index = rand.randint(0, len(b_string))
+                children_pop.append(string)
 
-                c_string = a_string[:a_index] + b_string[b_index:]
-                d_string = a_string[a_index:] + b_string[:b_index]
-
-                children_pop.append(c_string)
-                children_pop.append(d_string)
-                
-                string_buf = []
-        else:
-            children_pop.append(string)
-
-    if string_buf:
-        children_pop.append(string_buf)
-
-    return children_pop
+        if string_buf:
+            children_pop.append(string_buf)
 
     elif puzzle == 2:
         # Tri write this (using partial crossover )    <---------------------------------------------------------------------------
@@ -265,40 +263,44 @@ def crossover(parent_pop, temperature, puzzle):
         # Tri write this                               <---------------------------------------------------------------------------
     else:
         print "Error: Invalid puzzle in Crossover"
+    
+    return children_pop
+    
 
 # Mutate strings in population
 def mutate(children_pop, genes, temperature, puzzle):
     if puzzle == 1:
-    mutated_pop = []
+        mutated_pop = []
+        
+        # 2 - elitism, 0 - non_elitism
+        flag = 2
+        for string in children_pop:
+            if flag > 0:
+                flag -= 1
+                mutated_pop.append(children_pop[0])
+                continue
+            m_index = 0
+            if string:
+                m_index = rand.randint(0, len(string) - 1)
+            m_chance = rand.random()
+            string_buf = []
+            if m_chance > 1 - temperature:
+                new_gene = rand.choice(genes)
+                string_buf += string[:m_index]
+                string_buf.append(new_gene)
+                string_buf += string[m_index + 1:]
+                mutated_pop.append(string_buf)
+            else:
+                mutated_pop.append(string)
     
-    # 2 - elitism, 0 - non_elitism
-    flag = 2
-    for string in children_pop:
-        if flag > 0:
-            flag -= 1
-            mutated_pop.append(children_pop[0])
-            continue
-        m_index = 0
-        if string:
-            m_index = rand.randint(0, len(string) - 1)
-        m_chance = rand.random()
-        string_buf = []
-        if m_chance > 1 - temperature:
-            new_gene = rand.choice(genes)
-            string_buf += string[:m_index]
-            string_buf.append(new_gene)
-            string_buf += string[m_index + 1:]
-            mutated_pop.append(string_buf)
-        else:
-            mutated_pop.append(string)
-    
-    return mutated_pop
     elif puzzle == 2:
         # Jetro write this part <---------------------------------------------------------------------------
     elif puzzle == 3:
         # Jetro wirte this part (similar to 1) <---------------------------------------------------------------------------
     else:
         print "Error: Invalid Puzzle in Mutation"
+
+    return mutated_pop
 
 # ==== Print Stats ====
 def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
