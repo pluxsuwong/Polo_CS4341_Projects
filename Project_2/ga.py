@@ -8,11 +8,41 @@ import csv
 
 # ======== Program Constants ========
 
-P_SIZE = 20 # USER INPUT
+P_SIZE = 5 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
-FIT_MODE = 1 # USER INPUT
+FIT_MODE = 3 # USER INPUT
+STAT_SHEET = [] # USER OUTPUT
 
 # ======== Functions ========
+
+# ==== Print Stats ====
+
+def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
+    # best score
+    print "Top Score: " + str(top_score)
+    # first best string
+    print "First Top String: " + str(top_str)
+    # first best score gen
+    print "First Top Score Generation: " + str(ts_gen)
+    # final best string
+    print "Final Top String: " + str(f_top_str)
+    # total gen
+    print "Total Generations: " + str(total_gen)
+
+# ==== Collect Statistics ====
+
+def collect_stats(generation, population):
+    stat_entry = []
+    
+    b_performance = 0
+    w_performance = 0
+    m_performance = 0
+
+    stat_entry.append(generation)
+    stat_entry.append(b_performance)
+    stat_entry.append(w_performance)
+    stat_entry.append(m_performance)
+    STAT_SHEET.append(stat_entry)
 
 # ==== Initialization ====
 
@@ -85,6 +115,8 @@ def rand_string(puzzle, GP):
 
 # ==== Genetic Algorithm ====
 
+# == Helper Functions ==
+
 # Check if genes are repeated in string
 def no_repeats(element, genes):
     string = [e for e in element]
@@ -151,8 +183,10 @@ def puzzle_3_score_calc(tower):
     score = 10 + total_height**2 - total_cost
     return score
 
+# == Primary GA Functions ==
+
 # Evaluate fitness of strings
-def evaluate(puzzle, target, population, genes, fit_num):
+def evaluate(puzzle, target, population, genes, fit_num, cur_gen):
     raw_pop = []
     total_value = 0.0
 
@@ -183,6 +217,9 @@ def evaluate(puzzle, target, population, genes, fit_num):
 
     # Organize elements by fitness values
     raw_pop.sort(key = lambda x: x[0])
+    # Collect statistics
+    if total_gen % 2000 == 0:
+        collect_stats(cur_gen, raw_pop)
     # Cull bad strings
     for i in range(0, fit_num):
         total_value -= raw_pop[i][0]
@@ -301,34 +338,6 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
 
     return mutated_pop
 
-# ==== Print Stats ====
-
-def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
-    # best score
-    print "Top Score: " + str(top_score)
-    # first best string
-    print "First Top String: " + str(top_str)
-    # first best score gen
-    print "First Top Score Generation: " + str(ts_gen)
-    # final best string
-    print "Final Top String: " + str(f_top_str)
-    # total gen
-    print "Total Generations: " + str(total_gen)
-    '''
-    # stable solutions over time
-    print "Stable Strings v.s. Time"
-    for e in data_set:
-        print "Generation " + str(e[0]) + ":\t",
-        for i in range(0, e[1]):
-            print "*",
-        print ''
-    '''
-
-# ==== Collect Statistics ====
-
-def collect_stats(population):
-    return []
-
 # ======== Format Input ========
 
 puzzle_num = int(sys.argv[1])
@@ -378,6 +387,7 @@ a_list = []
 b_list = []
 c_list = []
 d_list = []
+
 population = gen_init_pop(puzzle_num, fd, P_SIZE)
 
 while time_elapsed <= run_time:
@@ -385,7 +395,7 @@ while time_elapsed <= run_time:
     time_elapsed = time.time() - start_time
     temperature = math.exp((-4*time_elapsed/run_time) - 0.3)
     # Evaluate
-    a_list = evaluate(puzzle_num, target, population, fd, cull_num)
+    a_list = evaluate(puzzle_num, target, population, fd, cull_num, total_gen)
     
     # Record statistics
     score = 0.0
@@ -402,7 +412,7 @@ while time_elapsed <= run_time:
         record = score
         record_string = a_list[-1][1]
         record_gen = total_gen
-    
+
     # Selection
     b_list = select(a_list, elite_num)
     # Crossover
@@ -412,18 +422,10 @@ while time_elapsed <= run_time:
     population = d_list
     print population
     print ''
-    '''
-    sol_num = 0
-    for e in population:
-        if sum(e) == record:
-            sol_num += 1
     # print temperature
-    if total_gen % 2000 == 0:
-        sol_tup = (total_gen, sol_num)
-        sol_tally.append(sol_tup)
-    '''
     total_gen += 1
 
 print ''
 final_string = population[0]
 print_stats(record, record_string, final_string, record_gen, total_gen)
+# Generate csv data file
