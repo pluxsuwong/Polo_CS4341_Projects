@@ -319,9 +319,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                         s = a_string[index]
                         if result_string_2.count(s) < b_string.count(s):
                             result_string_2.append(s)
-
-                    # print "R_S_1: " + str(result_string_1)
-                    # print "R_S_2: " + str(result_string_2)
+                    
                     children_pop.append(result_string_1)
                     children_pop.append(result_string_2)
                     
