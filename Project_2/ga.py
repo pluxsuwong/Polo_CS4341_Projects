@@ -1,6 +1,7 @@
 import fileinput as fi
 import random as rand
 from operator import itemgetter
+import os.path
 import math
 import sys
 import time 
@@ -11,38 +12,8 @@ import csv
 P_SIZE = 5 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
 FIT_MODE = 3 # USER INPUT
-STAT_SHEET = [] # USER OUTPUT
 
 # ======== Functions ========
-
-# ==== Print Stats ====
-
-def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
-    # best score
-    print "Top Score: " + str(top_score)
-    # first best string
-    print "First Top String: " + str(top_str)
-    # first best score gen
-    print "First Top Score Generation: " + str(ts_gen)
-    # final best string
-    print "Final Top String: " + str(f_top_str)
-    # total gen
-    print "Total Generations: " + str(total_gen)
-
-# ==== Collect Statistics ====
-
-def collect_stats(generation, population):
-    stat_entry = []
-    
-    b_performance = 0
-    w_performance = 0
-    m_performance = 0
-
-    stat_entry.append(generation)
-    stat_entry.append(b_performance)
-    stat_entry.append(w_performance)
-    stat_entry.append(m_performance)
-    STAT_SHEET.append(stat_entry)
 
 # ==== Initialization ====
 
@@ -128,8 +99,19 @@ def no_repeats(element, genes):
             return False
     return True
 
+# Calculate score for puzzle 1
+def puzzle_1_score_calc(string, chars, target):
+    score = 0.0
+    score = float(sum(string)) 
+    diff = target - score
+    if diff < 0:
+        score = 0.0
+    if not no_repeats(string, chars):
+        score = 0.0
+    return score
+
 # Calculate score for puzzle 2
-def puzzle_2_score_calc(string):
+def puzzle_2_score_calc(string, chars):
     score = 0.0
     bin1 = string[:10]
     bin2 = string[10:20]
@@ -141,10 +123,12 @@ def puzzle_2_score_calc(string):
         s_buf += e
 
     score = (m_buf + s_buf) / 2.0
+    if not no_repeats(string, chars):
+        score = 0.0
     return score
 
 # Calculate score for puzzle 3
-def puzzle_3_score_calc(tower):
+def puzzle_3_score_calc(tower, chars):
     score = 0.0
     w_limit = 999999
     s_limit = 999999
@@ -181,12 +165,14 @@ def puzzle_3_score_calc(tower):
             total_cost += floor[3]
 
     score = 10 + total_height**2 - total_cost
+    if not no_repeats(string, chars):
+        score = 0.0
     return score
 
 # == Primary GA Functions ==
 
 # Evaluate fitness of strings
-def evaluate(puzzle, target, population, genes, fit_num, cur_gen):
+def evaluate(puzzle, target, population, genes, fit_num):
     raw_pop = []
     total_value = 0.0
 
@@ -194,22 +180,18 @@ def evaluate(puzzle, target, population, genes, fit_num, cur_gen):
         fitness_val = 0.0
         score = 0.0
         
+        # Calculate string score
         if puzzle == 1:
-            score = target - float(sum(element))
+            score = puzzle_1_score_calc(element, genes, target)
         elif puzzle == 2:
-            score = puzzle_2_score_calc(element)
+            score = puzzle_2_score_calc(element, genes)
         elif puzzle == 3:
-            score = puzzle_3_score_calc(element)
+            score = puzzle_3_score_calc(element, genes)
         else:
-            print "Error: In fitness_function() - Invalid Puzzle Number"
+            print "Error: In evaluate() - Invalid Puzzle Number"
             sys.exit()
         
-        if score >= 0:
-            if no_repeats(element, genes):
-                if puzzle == 1:
-                    fitness_val = (target**2) - (score**2)
-                else:
-                    fitness_val = score**2
+        fitness_val = score**2 + 0.0001
         total_value += fitness_val
 
         element_tup = [fitness_val, element]
@@ -217,9 +199,6 @@ def evaluate(puzzle, target, population, genes, fit_num, cur_gen):
 
     # Organize elements by fitness values
     raw_pop.sort(key = lambda x: x[0])
-    # Collect statistics
-    if total_gen % 2000 == 0:
-        collect_stats(cur_gen, raw_pop)
     # Cull bad strings
     for i in range(0, fit_num):
         total_value -= raw_pop[i][0]
@@ -232,7 +211,7 @@ def evaluate(puzzle, target, population, genes, fit_num, cur_gen):
         try:
             raw_pop[i][0] /= total_value
         except ZeroDivisionError:
-            print "Error: In fitness_function() - Divide by Zero"
+            print "Error: In evaluate() - Divide by Zero"
             print "Exit Population:"
             print population
             sys.exit()
@@ -302,7 +281,6 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
         return
     
     return children_pop
-    
 
 # Mutate strings in population
 def mutate(children_pop, genes, temperature, puzzle, fit_num):
@@ -337,6 +315,36 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
         return
 
     return mutated_pop
+
+# ==== Print Stats ====
+
+def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
+    # best score
+    print "Top Score: " + str(top_score)
+    # first best string
+    print "First Top String: " + str(top_str)
+    # first best score gen
+    print "First Top Score Generation: " + str(ts_gen)
+    # final best string
+    print "Final Top String: " + str(f_top_str)
+    # total gen
+    print "Total Generations: " + str(total_gen)
+
+# ==== Collect Statistics ====
+
+def collect_stats(generation, puzzle_num, population, stat_sheet):
+    stat_entry = []
+    b_performance = 0
+    w_performance = 0
+    m_performance = 0
+
+    
+
+    stat_entry.append(generation)
+    stat_entry.append(b_performance)
+    stat_entry.append(w_performance)
+    stat_entry.append(m_performance)
+    stat_sheet.append(stat_entry)
 
 # ======== Format Input ========
 
@@ -387,6 +395,7 @@ a_list = []
 b_list = []
 c_list = []
 d_list = []
+stat_sheet = []
 
 population = gen_init_pop(puzzle_num, fd, P_SIZE)
 
@@ -395,16 +404,16 @@ while time_elapsed <= run_time:
     time_elapsed = time.time() - start_time
     temperature = math.exp((-4*time_elapsed/run_time) - 0.3)
     # Evaluate
-    a_list = evaluate(puzzle_num, target, population, fd, cull_num, total_gen)
+    a_list = evaluate(puzzle_num, target, population, fd, cull_num)
     
     # Record statistics
     score = 0.0
     if puzzle_num == 1:
-        score = sum(a_list[-1][1])
+        score = puzzle_1_score_calc(a_list[-1][1], fd, target)
     elif puzzle_num == 2:
-        score = puzzle_2_score_calc(a_list[-1][1])
+        score = puzzle_2_score_calc(a_list[-1][1], fd)
     elif puzzle_num == 3:
-        score = puzzle_3_score_calc(a_list[-1][1])
+        score = puzzle_3_score_calc(a_list[-1][1], fd)
     else:
         print "Error: Invalid Puzzle in main()"
         sys.exit()
@@ -422,10 +431,28 @@ while time_elapsed <= run_time:
     population = d_list
     print population
     print ''
+    # Collect statistics
+    if total_gen % 2000 == 0:
+        collect_stats(total_gen, puzzle_num, population, stat_sheet)
     # print temperature
     total_gen += 1
 
 print ''
 final_string = population[0]
 print_stats(record, record_string, final_string, record_gen, total_gen)
+
+'''
 # Generate csv data file
+file_num = 0
+file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
+while os.path.isfile(file_name):
+    file_num += 1
+    file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
+
+csv_file = open(file_name, 'w')
+field_names = ["Generation", "Best Score", "Worst Score", "Median Score"]
+writer = csv.DictWriter(csv_file, field_names=field_names)
+
+writer.writeheader()
+for entry in STAT_SHEET:
+'''
