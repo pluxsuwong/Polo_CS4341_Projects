@@ -508,10 +508,10 @@ while time_elapsed <= run_time:
     # Mutation
     d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
     population = d_list
-    print population
+    # print population
     # print ''
     # Collect statistics
-    if total_gen % 2000 == 0:
+    if total_gen % 50 == 0:
         stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
     # print temperature
     total_gen += 1
