@@ -9,7 +9,7 @@ import csv
 
 # ======== Program Constants ========
 
-P_SIZE = 100 # USER INPUT
+P_SIZE = 20 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
 FIT_MODE = 3 # USER INPUT
 
@@ -506,8 +506,8 @@ while time_elapsed <= run_time:
     # Crossover
     c_list = crossover(b_list, temperature, puzzle_num, elite_num)
     # Mutation
-    # d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
-    population = c_list
+    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
+    population = d_list
     print population
     # print ''
     # Collect statistics
@@ -532,7 +532,7 @@ col_1 = "Best Score"
 col_2 = "Worst Score"
 col_3 = "Median Score"
 field_names = [col_0, col_1, col_2, col_3]
-writer = csv.DictWriter(csv_file, delimiter=',', field_names=field_names)
+writer = csv.DictWriter(csv_file, delimiter=',', fieldnames=field_names)
 
 writer.writeheader()
 for entry in stat_sheet:
