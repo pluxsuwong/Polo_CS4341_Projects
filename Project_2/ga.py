@@ -183,17 +183,19 @@ def evaluate(puzzle, target, population, genes, fit_num):
         # Calculate string score
         if puzzle == 1:
             score = puzzle_1_score_calc(element, genes, target)
+            fitness_val = score**2 + 0.0001
         elif puzzle == 2:
             score = puzzle_2_score_calc(element, genes)
-            if score < 0:
+            if score < 0.0:
                 score = 0.0
+            fitness_val = score**3 + 0.0001
         elif puzzle == 3:
             score = puzzle_3_score_calc(element, genes)
         else:
             print "Error: In evaluate() - Invalid Puzzle Number"
             sys.exit()
         
-        fitness_val = score**2 + 0.0001
+        # fitness_val = score**2 + 0.0001
         total_value += fitness_val
 
         element_tup = [fitness_val, element]
