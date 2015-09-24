@@ -162,10 +162,10 @@ def puzzle_3_score_calc(tower, chars):
             # Update limit values and total cost
             w_limit = floor_width
             s_limit = floor_strength
-            total_cost += floor[3]
+            total_cost += tower[i][3]
 
     score = 10 + total_height**2 - total_cost
-    if not no_repeats(string, chars):
+    if not no_repeats(tower, chars):
         score = 0.0
     return score
 
@@ -242,7 +242,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
     for i in range(0, fit_num):
         children_pop.append(parent_pop.pop(0))
 
-    if puzzle == 1 or PUZZLE == 3:
+    if puzzle == 1 or puzzle == 3:
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
@@ -387,7 +387,32 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
     
     elif puzzle == 2:
         # Jetro write this part <---------------------------------------------------------------------------
-        return
+        #puzzle 2 has to shuffle
+        for string in children_pop:
+            m_index1 = 0
+            m_index2 = 0
+            if string:
+                #create first random index and second random index
+                m_index1 = rand.randint(0, 9) #for bin 1
+                m_index2 = rand.randint(10, 19) #for bin 2
+            m_chance = rand.random()
+            string_buf = []
+            if m_chance > 1 - temperature:
+                #take out two random gene in the genes sequence
+                #this is for bin 1
+                string_buf = string
+                temporary_value = string_buf[m_index1]
+                string_buf[m_index1] = string_buf[m_index1+20]
+                string_buf[m_index1+20] = temporary_value
+                
+                #this is for bin 2
+                temporary_value2 = string_buf[m_index2]
+                string_buf[m_index2] = string_buf[m_index2+10]
+                string_buf[m_index2+10] = temporary_value2
+                
+                mutated_pop.append(string_buf)
+            else:
+                mutated_pop.append(string)
     elif puzzle == 3:
         # Jetro wirte this part (similar to 1) <------------------------------------------------------------
         return
@@ -522,8 +547,8 @@ while time_elapsed <= run_time:
     # Crossover
     c_list = crossover(b_list, temperature, puzzle_num, elite_num)
     # Mutation
-    # d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
-    population = c_list
+    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
+    population = d_list
     print population
     # print ''
     # Collect statistics

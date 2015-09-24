@@ -25,8 +25,6 @@ if puzzle == 1:
 elif puzzle == 2:
     for i in range(0, 30):
         tmp = rand.uniform(-10, 10)
-        tmp = round(tmp, 1)
-        tmp = rand.randint(-3, 3)
         fh.write(str(tmp) + '\n')
 elif puzzle == 3:
     floor_types = ["Door", "Wall", "Lookout"]
