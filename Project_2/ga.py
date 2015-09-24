@@ -194,37 +194,40 @@ def evaluate(puzzle, target, population, genes):
 # Select strings from old population to create new population
 # Roulette selection
 def select(ordered_pop, puzzle):
-    if puzzle == 1:
     selected_pop = []
     cutoff = rand.random()
-    for x in range(0, 5):
+
+    # 2 - elitism, 0 - non_elitism
+    flag = 2
+    fit_num = 0
+    if flag == 2:
+        fit_num = 5
+    
+    # Elitism guarantees survival of fittest
+    for x in range(0, fit_num):
         selected_pop.append(ordered_pop[-1][1])
-    for x in range(5, len(ordered_pop)):
+    for x in range(fit_num, len(ordered_pop)):
         for i in ordered_pop:
             if i[0] > cutoff:
                 selected_pop.append(i[1])
                 cutoff = rand.random()
                 break
-    # print selected_pop
-    # print ""
+    
     return selected_pop
-
-    elif puzzle == 2:
-        # Will write this <---------------------------------------------------------------------------
-    elif puzzle == 3:
-        # Will write this <---------------------------------------------------------------------------
-    else:
-        print "Error: invalid puzzle in Select"
-
 
 # Crossover between strings in population
 def crossover(parent_pop, temperature, puzzle):
     if puzzle == 1:
     children_pop = []
     string_buf = []
-    flag = 0
-    for i in range(0, 2):
-        children_pop.append(parent_pop[0])
+
+    # 2 - elitism, 0 - non_elitism
+    flag = 2
+    if flag == 2:
+        for i in range(0, 2):
+            flag -= 1
+            children_pop.append(parent_pop[0])
+
     rand.shuffle(parent_pop)
     for string in parent_pop:
         if flag < 2:
@@ -265,14 +268,14 @@ def crossover(parent_pop, temperature, puzzle):
 
 # Mutate strings in population
 def mutate(children_pop, genes, temperature, puzzle):
-    # print "Before: " + str(len(children_pop))
-    # print children_pop
     if puzzle == 1:
     mutated_pop = []
-    flag = 0
+    
+    # 2 - elitism, 0 - non_elitism
+    flag = 2
     for string in children_pop:
-        if flag < 2:
-            flag += 1
+        if flag > 0:
+            flag -= 1
             mutated_pop.append(children_pop[0])
             continue
         m_index = 0
@@ -288,8 +291,7 @@ def mutate(children_pop, genes, temperature, puzzle):
             mutated_pop.append(string_buf)
         else:
             mutated_pop.append(string)
-    # print "After: " + str(len(mutated_pop))
-    # print mutated_pop
+    
     return mutated_pop
     elif puzzle == 2:
         # Jetro write this part <---------------------------------------------------------------------------
