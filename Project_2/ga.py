@@ -9,7 +9,7 @@ import csv
 
 # ======== Program Constants ========
 
-P_SIZE = 10 # USER INPUT
+P_SIZE = 100 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
 FIT_MODE = 3 # USER INPUT
 
@@ -281,7 +281,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                 else:
                     a_string = string_buf # parent a
                     b_string = string # parent b
-                    
+
                     # Partial crossover so get a beginning and end index in a
                     begin_index = rand.randint(0, len(a_string) - 1)
                     end_index = rand.randint(begin_index, len(a_string))
@@ -320,9 +320,8 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                         if result_string_2.count(s) < b_string.count(s):
                             result_string_2.append(s)
 
-
-                    print "R_S_1: " + str(result_string_1)
-                    print "R_S_2: " + str(result_string_2)
+                    # print "R_S_1: " + str(result_string_1)
+                    # print "R_S_2: " + str(result_string_2)
                     children_pop.append(result_string_1)
                     children_pop.append(result_string_2)
                     
@@ -345,7 +344,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
     else:
         print "Error: Invalid puzzle in Crossover"
         return
-    
+
     return children_pop
 
 # Mutate strings in population
@@ -507,9 +506,9 @@ while time_elapsed <= run_time:
     # Crossover
     c_list = crossover(b_list, temperature, puzzle_num, elite_num)
     # Mutation
-    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
-    population = d_list
-    # print population
+    # d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
+    population = c_list
+    print population
     # print ''
     # Collect statistics
     if total_gen % 2000 == 0:
@@ -520,7 +519,6 @@ while time_elapsed <= run_time:
 print ''
 final_string = population[0]
 print_stats(record, record_string, final_string, record_gen, total_gen)
-
 # Generate csv data file
 file_num = 0
 file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
