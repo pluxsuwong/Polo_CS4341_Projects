@@ -332,7 +332,7 @@ def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
 
 # ==== Collect Statistics ====
 
-def collect_stats(generation, puzzle_num, population, stat_sheet):
+def collect_stats(generation, puzzle_num, genes, population, stat_sheet):
     stat_entry = []
     b_performance = 0
     w_performance = 0
@@ -348,7 +348,7 @@ def collect_stats(generation, puzzle_num, population, stat_sheet):
         elif puzzle_num == 3:
             entry_score = puzzle_3_score_calc(entry_string, genes)
         entry_tup = [entry_score, entry_string]
-        ordered_pop.append(entry_yup)
+        ordered_pop.append(entry_tup)
 
     stat_entry.append(generation)
     stat_entry.append(b_performance)
@@ -443,7 +443,7 @@ while time_elapsed <= run_time:
     print ''
     # Collect statistics
     if total_gen % 2000 == 0:
-        collect_stats(total_gen, puzzle_num, population, stat_sheet)
+        collect_stats(total_gen, puzzle_num, fd, population, stat_sheet)
     # print temperature
     total_gen += 1
 
