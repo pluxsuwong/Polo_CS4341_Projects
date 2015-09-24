@@ -319,6 +319,12 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
 
     elif puzzle == 3:
         # Tri write this                               <---------------------------------------------------------------------------
+        string_buf = []
+        rand.shuffle(parent_pop)
+        for string in parent_pop:
+            if co_chance > 1 - temperature:
+                if not string_buf:
+    
         return
     else:
         print "Error: Invalid puzzle in Crossover"
