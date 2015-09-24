@@ -78,7 +78,7 @@ def rand_string(puzzle, GP):
 
 # ==== Genetic Algorithm ====
 
-# Puzzle 1 rules
+# Check if genes are repeated in string
 def no_repeats(element, genes):
     string = [e for e in element]
     chars = [g for g in genes]
@@ -89,73 +89,91 @@ def no_repeats(element, genes):
             return False
     return True
 
-# Puzzle 2 rules
+# Calculate score for puzzle 2
 def puzzle_2_score_calc(string):
-    
+    score = 0.0
     bin1 = string[:10]
     bin2 = string[10:20]
-    
-    mul = 1.0
-    sum = 0.0
-    
+    m_buf = 1.0
+    s_buf = 0.0
     for e in bin1:
-        mul *= e
-    
+        m_buf *= e
     for e in bin2:
-        sum += e
+        s_buf += e
 
-    return (mul + sum) / 2.0
+    score = (m_buf + s_buf) / 2.0
+    return score
 
+# Calculate score for puzzle 3
+def puzzle_3_score_calc(tower):
+    score = 0.0
+    w_limit = 999999
+    s_limit = 999999
+    total_cost = 0.0
+    total_height = len(tower)
+
+    if total_height >= 2:
+        for i in range(0, total_height):
+            floor_type = tower[i][0]
+            floor_width = tower[i][1]
+            floor_strength = tower[i][2]
+            # Check rules 1 - 3
+            if i == 0:
+                if floor_type != "Door":
+                    return 0.0
+            elif i == total_height - 1:
+                if floor_type != "Lookout":
+                    return 0.0
+            else:
+                if floor_type != "Wall":
+                    return 0.0
+            
+            # Check rule 4
+            if floor_width > w_limit:
+                return 0.0
+
+            # Check rule 5
+            if floor_strength < len(tower[i + 1:]):
+                return 0.0
+
+            # Update limit values and total cost
+            w_limit = floor_width
+            s_limit = floor_strength
+            total_cost += floor[3]
+
+    score = 10 + total_height**2 - total_cost
+    return score
 
 # Evaluate fitness of strings
 def evaluate(puzzle, target, population, genes):
     raw_pop = []
     total_value = 0.0
 
-    # Puzzle 1
-    if puzzle == 1:
-        for element in population:
-            # Calculate fitness value of element
-            fitness_val = 0.0
-            diff = target - float(sum(element))
-            if diff < 0:
-                fitness_val = 0.0
-            else:
-                if no_repeats(element, genes):
-                    fitness_val = (target**2) - (diff**2)
-                else:
-                    fitness_val = 0.0
-            
-            total_value += fitness_val
-            element_tup = [fitness_val, element]
-
-            # Add tuple (e, value) to ordered_pop
-            raw_pop.append(element_tup)
-    # Puzzle 2
-    elif puzzle == 2:
-        for element in population:
-            fitness_val = 0.0
+    for element in population:
+        fitness_val = 0.0
+        score = 0.0
+        
+        if puzzle == 1:
+            score = target - float(sum(element))
+        elif puzzle == 2:
             score = puzzle_2_score_calc(element)
-            if score < 0:
-                fitness_val = 0.0
-            else:
-                if no_repeats(element,genes):
-                    fitness_val = score**2
+        elif puzzle == 3:
+            score = puzzle_3_score_calc(element)
+        else:
+            print "Error: In fitness_function() - Invalid Puzzle Number"
+            sys.exit()
+        
+        if score >= 0:
+            if no_repeats(element, genes):
+                if puzzle == 1:
+                    fitness_val = (target**2) - (score**2)
                 else:
-                    fitness_val = 0.0
+                    fitness_val = score**2
+        total_value += fitness_val
 
-            total_value += fitness_val
-            element_tup = [fitness_val, element]
+        element_tup = [fitness_val, element]
+        raw_pop.append(element_tup)
 
-            raw_pop.append(element_tup)
-    # Puzzle 3
-    elif puzzle == 3:
-        print '3'
-        # Peter <---------------------------------------------------------------------------
-    else:
-        print "Error: In fitness_function() - Invalid Puzzle Number"
-
-    # print raw_pop
     # Organize elements by fitness values
     raw_pop.sort(key = lambda x: x[0])
     # Accumulate element fitness values
@@ -310,22 +328,22 @@ fi.close()
 run_time = int(sys.argv[3])
 
 # Set target value
-target = 0
+target = -1
 if puzzle_num == 1:
     target = float(fd[0])
     del fd[0]
-elif puzzle_num == 2:
-    target = ((10.0**10)+(10.0**2))/2
-elif puzzle_num == 3:
-    print '3'
-else:
-    print 'else'
 
 # Format fd
 if puzzle_num == 1 or puzzle_num == 2:
-    # Format layers
     for i in range(0, len(fd)):
         fd[i] = float(fd[i])
+elif puzzle_num == 3:
+    for i in range(0, len(fd)):
+        tmp = fd[i].split(',')
+        fd[i] = (tmp[0], int(tmp[1]), int(tmp[2]), int(tmp[3]))
+else:
+    print "Error: Invalid puzzle_num argument [1 - 3]"
+    sys.exit()
 
 # ======== Run Genetic Algorithm ========
 time_elapsed = 0
@@ -349,10 +367,18 @@ while time_elapsed <= run_time:
     a_list = evaluate(puzzle_num, target, population, fd)
     
     # Record statistics
-    # TODO: modify so 1 2 3 be used
+    score = 0.0
     if puzzle_num == 1:
-        if sum(a_list[-1][1]) > record:
-            record = sum(a_list[-1][1])
+        score = sum(a_list[-1][1])
+    elif puzzle_num == 2:
+        score = puzzle_2_score_calc(a_list[-1][1])
+    elif puzzle_num == 3:
+        score = puzzle_3_score_calc(a_list[-1][1])
+    else:
+        print "Error: Invalid Puzzle in main()"
+        sys.exit()
+    if score > record:
+        record = score
         record_string = a_list[-1][1]
         record_gen = total_gen
     
