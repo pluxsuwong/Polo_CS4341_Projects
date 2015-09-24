@@ -9,7 +9,7 @@ import csv
 
 # ======== Program Constants ========
 
-P_SIZE = 5 # USER INPUT
+P_SIZE = 20 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
 FIT_MODE = 3 # USER INPUT
 
@@ -227,10 +227,12 @@ def select(ordered_pop, fit_num):
     # Elitism guarantees survival of fittest
     for x in range(0, fit_num):
         selected_pop.append(ordered_pop[-x-1][1])
+        print 'foofoo'
     for x in range(fit_num, len(ordered_pop)):
         for i in ordered_pop:
             if i[0] > cutoff:
                 selected_pop.append(i[1])
+                print 'foo'
                 cutoff = rand.random()
                 break
     
@@ -272,7 +274,49 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
 
     elif puzzle == 2:
         # Tri write this (using partial crossover )    <---------------------------------------------------------------------------
-        return
+        string_buf = []
+        rand.shuffle(parent_pop)
+        for string in parent_pop:
+            co_chance = rand.random()
+            if co_chance > 1 - temperature:
+                if not string_buf:
+                    string_buf = string
+                else:
+                    a_string = string_buf # parent a
+                    b_string = string # parent b
+                    
+                    # Partial crossover so get a beginning and end index in a
+                    begin_index = rand.randint(0, len(a_string) - 1)
+                    end_index = rand.randint(begin_index, len(a_string))
+                    
+                    # Substring from parent a
+                    sub_a_string = a_string[begin_index:end_index]
+                    
+                    sub_b_string = []
+                    for s in b_string:
+                        if len(sub_b_string) >= begin_index:
+                            break
+                        elif sub_b_string.count(s) + sub_a_string.count(s) < a_string.count(s):
+                            sub_b_string.append(s)
+                
+                    result_string = sub_b_string + sub_a_string
+                    
+                    for s in b_string:
+                        if len(result_string) >= len(a_string):
+                            break
+                        elif result_string.count(s) < a_string.count(s):
+                            result_string.append(s)
+        
+                    children_pop.append(result_string)
+                    
+                    string_buf = []
+            else:
+                children_pop.append(string)
+                    
+        if string_buf:
+            children_pop.append(string_buf)
+    
+
     elif puzzle == 3:
         # Tri write this                               <---------------------------------------------------------------------------
         return
@@ -437,13 +481,16 @@ while time_elapsed <= run_time:
     # Crossover
     c_list = crossover(b_list, temperature, puzzle_num, elite_num)
     # Mutation
-    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
-    population = d_list
-    print population
+    #d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
+    population = c_list
+    print b_list
+    print ''
+    print c_list
+    print "End print cycle"
     print ''
     # Collect statistics
-    if total_gen % 2000 == 0:
-        collect_stats(total_gen, puzzle_num, fd, population, stat_sheet)
+    #if total_gen % 2000 == 0:
+        #collect_stats(total_gen, puzzle_num, fd, population, stat_sheet)
     # print temperature
     total_gen += 1
 
