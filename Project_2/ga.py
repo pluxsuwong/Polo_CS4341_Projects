@@ -293,32 +293,34 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                     sub_b_string_2 = b_string[begin_index:end_index]
                     sub_a_string_2 = []
                     
-                    for s in b_string:
-                        if len(sub_b_string_1) >= begin_index:
-                            break
-                        elif sub_b_string_1.count(s) + sub_a_string_1.count(s) < a_string.count(s):
+                    while len(sub_b_string_1) < begin_index:
+                        index = rand.randint (0, len(b_string) - 1)
+                        s = b_string[index]
+                        if sub_b_string_1.count(s) + sub_a_string_1.count(s) < a_string.count(s):
                             sub_b_string_1.append(s)
-                    
-                    for s in a_string:
-                        if len(sub_a_string_2) >= begin_index:
-                            break
-                        elif sub_a_string_2.count(s) + sub_b_string_2.count(s) < b_string.count(s):
+
+                    while len(sub_a_string_2) < begin_index:
+                        index = rand.randint (0, len(a_string) - 1)
+                        s = a_string[index]
+                        if sub_a_string_2.count(s) + sub_b_string_2.count(s) < b_string.count(s):
                             sub_a_string_2.append(s)
 
                     result_string_1 = sub_b_string_1 + sub_a_string_1
                     result_string_2 = sub_a_string_2 + sub_b_string_2
-                    
-                    for s in b_string:
-                        if len(result_string_1) >= len(a_string):
-                            break
-                        elif result_string_1.count(s) < a_string.count(s):
+
+                    while len(result_string_1) < len(a_string):
+                        index = rand.randint (0, len(b_string) - 1)
+                        s = b_string[index]
+                        if result_string_1.count(s) < a_string.count(s):
                             result_string_1.append(s)
-                    
-                    for s in a_string:
-                        if len(result_string_2) >= len(b_string):
-                            break
-                        elif result_string_2.count(s) < b_string.count(s):
+
+                    while len(result_string_2) < len(b_string):
+                        index = rand.randint (0, len(a_string) - 1)
+                        s = a_string[index]
+                        if result_string_2.count(s) < b_string.count(s):
                             result_string_2.append(s)
+
+
                     print "R_S_1: " + str(result_string_1)
                     print "R_S_2: " + str(result_string_2)
                     children_pop.append(result_string_1)
@@ -333,12 +335,12 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
 
     elif puzzle == 3:
         # Tri write this                               <---------------------------------------------------------------------------
-        string_buf = []
-        rand.shuffle(parent_pop)
-        for string in parent_pop:
-            if co_chance > 1 - temperature:
-                if not string_buf:
-    
+#        string_buf = []
+#        rand.shuffle(parent_pop)
+#        for string in parent_pop:
+#            if co_chance > 1 - temperature:
+#                if not string_buf:
+
         return
     else:
         print "Error: Invalid puzzle in Crossover"
