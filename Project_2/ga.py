@@ -339,7 +339,7 @@ if puzzle_num == 1 or puzzle_num == 2:
         fd[i] = float(fd[i])
 elif puzzle_num == 3:
     for i in range(0, len(fd)):
-        tmp = fd[i].split(',')
+        tmp = fd[i].split('\t')
         fd[i] = (tmp[0], int(tmp[1]), int(tmp[2]), int(tmp[3]))
 else:
     print "Error: Invalid puzzle_num argument [1 - 3]"
