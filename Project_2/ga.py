@@ -9,7 +9,7 @@ import csv
 
 # ======== Program Constants ========
 
-P_SIZE = 20 # USER INPUT
+P_SIZE = 30 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
 FIT_MODE = 3 # USER INPUT
 
@@ -242,7 +242,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
     for i in range(0, fit_num):
         children_pop.append(parent_pop.pop(0))
 
-    if puzzle == 1:
+    if puzzle == 1 or puzzle == 3:
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
@@ -319,9 +319,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                         s = a_string[index]
                         if result_string_2.count(s) < b_string.count(s):
                             result_string_2.append(s)
-
-                    # print "R_S_1: " + str(result_string_1)
-                    # print "R_S_2: " + str(result_string_2)
+                    
                     children_pop.append(result_string_1)
                     children_pop.append(result_string_2)
                     
@@ -332,15 +330,33 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
         if string_buf:
             children_pop.append(string_buf)
 
-    elif puzzle == 3:
-        # Tri write this                               <---------------------------------------------------------------------------
+#    elif puzzle == 3:
+#        # Tri write this                               <---------------------------------------------------------------------------
 #        string_buf = []
 #        rand.shuffle(parent_pop)
 #        for string in parent_pop:
 #            if co_chance > 1 - temperature:
 #                if not string_buf:
-
-        return
+#                    string_buf = string
+#                else:
+#                    a_string = string_buf
+#                    b_string = string
+#                        
+#                    a_index = rand.randint(0, len(a_string))
+#                    b_index = rand.randint(0, len(b_string))
+#                        
+#                    c_string = a_string[:a_index] + b_string[b_index:]
+#                    d_string = a_string[a_index:] + b_string[:b_index]
+#
+#                    children_pop.append(c_string)
+#                    children_pop.append(d_string)
+#        
+#                    string_buf = []
+#            else:
+#                children_pop.append(string)
+#
+#        if string_buf:
+#            children_pop.append(string_buf)
     else:
         print "Error: Invalid puzzle in Crossover"
         return
