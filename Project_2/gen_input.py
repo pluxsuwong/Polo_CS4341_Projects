@@ -17,10 +17,10 @@ fh = open(name, 'w')
 
 if puzzle == 1:
     gene_pool_size = rand.randint(4, 51)
-    target = rand.randint(gene_pool_size, 4*gene_pool_size)
+    target = 50*rand.randint(gene_pool_size, 4*gene_pool_size)
     fh.write(str(target) + '\n')
     for i in range(0, gene_pool_size):
-        tmp = rand.randint(1, gene_pool_size)
+        tmp = 5*rand.randint(1, gene_pool_size)
         fh.write(str(tmp) + '\n')
 elif puzzle == 2:
     for i in range(0, 30):

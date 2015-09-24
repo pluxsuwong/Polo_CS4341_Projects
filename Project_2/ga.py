@@ -9,7 +9,7 @@ import csv
 
 # ======== Program Constants ========
 
-P_SIZE = 20 # USER INPUT
+P_SIZE = 100 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
 FIT_MODE = 3 # USER INPUT
 
@@ -185,6 +185,8 @@ def evaluate(puzzle, target, population, genes, fit_num):
             score = puzzle_1_score_calc(element, genes, target)
         elif puzzle == 2:
             score = puzzle_2_score_calc(element, genes)
+            if score < 0:
+                score = 0.0
         elif puzzle == 3:
             score = puzzle_3_score_calc(element, genes)
         else:
@@ -550,9 +552,9 @@ while time_elapsed <= run_time:
     d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
     population = d_list
     print population
-    # print ''
+    print ''
     # Collect statistics
-    if total_gen % 2000 == 0:
+    if total_gen % 50 == 0:
         stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
     # print temperature
     total_gen += 1
