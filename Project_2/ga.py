@@ -193,7 +193,7 @@ def evaluate(puzzle, target, population, genes):
 
 # Select strings from old population to create new population
 # Roulette selection
-def select(ordered_pop, puzzle):
+def select(ordered_pop):
     selected_pop = []
     cutoff = rand.random()
 
