@@ -11,7 +11,7 @@ import csv
 
 P_SIZE = 100 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
-FIT_MODE = 3 # USER INPUT
+FIT_MODE = 2 # USER INPUT
 
 # ======== Functions ========
 
@@ -186,11 +186,10 @@ def evaluate(puzzle, target, population, genes, fit_num):
             fitness_val = score**2 + 0.0001
         elif puzzle == 2:
             score = puzzle_2_score_calc(element, genes)
-            if score < 0.0:
-                score = 0.0
-            fitness_val = score**3 + 0.0001
+            fitness_val = score + 0.0001
         elif puzzle == 3:
             score = puzzle_3_score_calc(element, genes)
+            fitness_val = score**2 + 0.0001
         else:
             print "Error: In evaluate() - Invalid Puzzle Number"
             sys.exit()
@@ -199,6 +198,7 @@ def evaluate(puzzle, target, population, genes, fit_num):
         total_value += fitness_val
 
         element_tup = [fitness_val, element]
+        print "fitness: " + str(fitness_val) + " element: " + str(element)
         raw_pop.append(element_tup)
 
     # Organize elements by fitness values
@@ -208,8 +208,12 @@ def evaluate(puzzle, target, population, genes, fit_num):
         total_value -= raw_pop[i][0]
         raw_pop[i][0] = 0
     # Accumulate element fitness values
+    most_neg = raw_pop[0][0]
+    if most_neg < 0:
+        raw_pop[0][0] = 0
+        most_neg *= -1
     for i in range(1, len(raw_pop)):
-        raw_pop[i][0] += raw_pop[i - 1][0]
+        raw_pop[i][0] += raw_pop[i - 1][0] + most_neg
     # Normalize element fitness values
     for i in range(0, len(raw_pop)):
         try:
@@ -553,7 +557,7 @@ while time_elapsed <= run_time:
     # Mutation
     d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
     population = d_list
-    print population
+    #print population
     print ''
     # Collect statistics
     if total_gen % 50 == 0:
