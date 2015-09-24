@@ -390,13 +390,13 @@ def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
 
 # ==== Collect Statistics ====
 
-def collect_stats(generation, puzzle_num, genes, population, stat_sheet):
+def collect_stats(generation, puzzle_num, genes, population):
     stat_entry = []
     b_performance = 0
     w_performance = 0
     m_performance = 0
     m_index = int(len(population)/2)
-    ordered_pop = []
+    scores = []
     for i in range(0, len(population)):
         entry_string = population[i]
         if puzzle_num == 1:
@@ -405,14 +405,18 @@ def collect_stats(generation, puzzle_num, genes, population, stat_sheet):
             entry_score = puzzle_2_score_calc(entry_string, genes)
         elif puzzle_num == 3:
             entry_score = puzzle_3_score_calc(entry_string, genes)
-        entry_tup = [entry_score, entry_string]
-        ordered_pop.append(entry_tup)
+        scores.append(entry_score)
+    scores.sort()
+
+    b_performance = scores[-1]
+    w_performance = scores[0]
+    m_performance = scores[m_index]
 
     stat_entry.append(generation)
     stat_entry.append(b_performance)
     stat_entry.append(w_performance)
     stat_entry.append(m_performance)
-    stat_sheet.append(stat_entry)
+    return stat_entry
 
 # ======== Format Input ========
 
@@ -495,13 +499,13 @@ while time_elapsed <= run_time:
     # Crossover
     c_list = crossover(b_list, temperature, puzzle_num, elite_num)
     # Mutation
-    # d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
-    population = c_list
+    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
+    population = d_list
     # print population
-    print ''
+    # print ''
     # Collect statistics
-    # if total_gen % 2000 == 0:
-        # collect_stats(total_gen, puzzle_num, fd, population, stat_sheet)
+    if total_gen % 2000 == 0:
+        stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
     # print temperature
     total_gen += 1
 
@@ -509,7 +513,6 @@ print ''
 final_string = population[0]
 print_stats(record, record_string, final_string, record_gen, total_gen)
 
-'''
 # Generate csv data file
 file_num = 0
 file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
@@ -518,9 +521,15 @@ while os.path.isfile(file_name):
     file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
 
 csv_file = open(file_name, 'w')
-field_names = ["Generation", "Best Score", "Worst Score", "Median Score"]
-writer = csv.DictWriter(csv_file, field_names=field_names)
+col_0 = "Generation"
+col_1 = "Best Score"
+col_2 = "Worst Score"
+col_3 = "Median Score"
+field_names = [col_0, col_1, col_2, col_3]
+writer = csv.DictWriter(csv_file, delimiter=',', field_names=field_names)
 
 writer.writeheader()
-for entry in STAT_SHEET:
-'''
+for entry in stat_sheet:
+    writer.writerow({col_0: entry[0], col_1: entry[1], col_2: entry[2], col_3: entry[3]})
+
+csv_file.close()
