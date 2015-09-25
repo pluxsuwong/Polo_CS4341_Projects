@@ -66,9 +66,14 @@ def rand_string(puzzle, GP):
                 chars.remove(i)
 
         # First layer is a door
-        door = rand.choice(doors)
+        try:
+            door = rand.choice(doors)
+        except IndexError:
+            print "Error: In rand_string() - Input contains no door layers"
+            sys.exit()
         string.append(door)
 
+        # Layers in between are walls
         string_len = rand.randint(0, len(chars))
         for i in range(0, string_len):
             c = rand.choice(chars)
@@ -76,7 +81,11 @@ def rand_string(puzzle, GP):
             chars.remove(c)
 
         # Last layer is a lookout
-        lookout = rand.choice(lookouts)
+        try:
+            lookout = rand.choice(lookouts)
+        except IndexError:
+            print "Error: In rand_string() - Input contains no lookout layers"
+            sys.exit()
         string.append(lookout)
     # Invalid puzzle
     else:
@@ -164,7 +173,7 @@ def puzzle_3_score_calc(tower, chars):
             s_limit = floor_strength
             total_cost += tower[i][3]
 
-    score = 10 + total_height**2 - total_cost
+        score = 10 + total_height**2 - total_cost
     if not no_repeats(tower, chars):
         score = 0.0
     return score
@@ -191,6 +200,8 @@ def evaluate(puzzle, target, population, genes, fit_num):
             fitness_val = score**2 + 0.0001 # math.log(score, 100*len(population)) + 0.0001
         elif puzzle == 3:
             score = puzzle_3_score_calc(element, genes)
+            if score < 0:
+                score = 1 / abs(score)
             fitness_val = score**2 + 0.0001
         else:
             print "Error: In evaluate() - Invalid Puzzle Number"
@@ -342,7 +353,7 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
     mutated_pop = []
     for i in range(0, fit_num):
         mutated_pop.append(children_pop.pop(0))
-    if puzzle == 1:
+    if puzzle == 1 or puzzle == 3:
         for string in children_pop:
             m_index = 0
             if string:
@@ -359,8 +370,6 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
                 mutated_pop.append(string)
     
     elif puzzle == 2:
-        # Jetro write this part <---------------------------------------------------------------------------
-        #puzzle 2 has to shuffle
         for string in children_pop:
             m_index1 = 0
             m_index2 = 0
@@ -387,22 +396,6 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
             else:
                 mutated_pop.append(string)
         
-    elif puzzle == 3:
-         for string in children_pop:
-            m_index = 0
-            if string:
-                m_index = rand.randint(0, len(string) - 1)
-            m_chance = rand.random()
-            string_buf = []
-            if m_chance > 1 - temperature:
-                new_gene = rand.choice(genes)
-                string_buf += string[:m_index]
-                string_buf.append(new_gene)
-                string_buf += string[m_index + 1:]
-                mutated_pop.append(string_buf)
-            else:
-                mutated_pop.append(string)
-                
     else:
         print "Error: Invalid Puzzle in Mutation"
 
@@ -553,7 +546,7 @@ while time_elapsed <= run_time:
     # print "MUTATE: " + str(len(d_list))
     # print d_list[0]
     population = d_list
-    #print population
+    # print population
     # print ''
     # Collect statistics
     if total_gen % 25 == 0:
