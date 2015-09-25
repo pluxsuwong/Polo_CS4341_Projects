@@ -186,7 +186,9 @@ def evaluate(puzzle, target, population, genes, fit_num):
             fitness_val = score**2 + 0.0001
         elif puzzle == 2:
             score = puzzle_2_score_calc(element, genes)
-            fitness_val = score + 0.0001
+            if score < 0:
+                score = 0
+            fitness_val = score**2 + 0.0001
         elif puzzle == 3:
             score = puzzle_3_score_calc(element, genes)
             fitness_val = score**2 + 0.0001
@@ -198,7 +200,6 @@ def evaluate(puzzle, target, population, genes, fit_num):
         total_value += fitness_val
 
         element_tup = [fitness_val, element]
-        print "fitness: " + str(fitness_val) + " element: " + str(element)
         raw_pop.append(element_tup)
 
     # Organize elements by fitness values
@@ -251,6 +252,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
         children_pop.append(parent_pop.pop(0))
 
     if puzzle == 1 or puzzle == 3:
+        print "Cross Over: " + str(puzzle)
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
@@ -279,16 +281,23 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
             children_pop.append(string_buf)
 
     elif puzzle == 2:
+#        print "Cross Over: " + str(puzzle)
+        print "Begin Cross Over"
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
             co_chance = rand.random()
+            print "checking for co_chance"
+            
             if co_chance > 1 - temperature:
                 if not string_buf:
                     string_buf = string
                 else:
                     a_string = string_buf # parent a
                     b_string = string # parent b
+                    
+                    print "Parent A: " + str(a_string)
+                    print "Parent B: " + str(b_string)
 
                     # Partial crossover so get a beginning and end index in a
                     begin_index = rand.randint(0, len(a_string) - 1)
@@ -327,17 +336,23 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                         s = a_string[index]
                         if result_string_2.count(s) < b_string.count(s):
                             result_string_2.append(s)
+                
+                    print "R_S_1: " + str(result_string_1)
+                    print "R_S_2: " + str(result_string_2)
                     
+                    print ''
+                
                     children_pop.append(result_string_1)
                     children_pop.append(result_string_2)
                     
                     string_buf = []
             else:
                 children_pop.append(string)
+                print "Not chosen for cross over"
                     
         if string_buf:
             children_pop.append(string_buf)
-
+        print "End Cross Over"
 #    elif puzzle == 3:
 #        # Tri write this                               <---------------------------------------------------------------------------
 #        string_buf = []
@@ -571,7 +586,7 @@ while time_elapsed <= run_time:
     d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
     population = d_list
     #print population
-    print ''
+#    print ''
     # Collect statistics
     if total_gen % 50 == 0:
         stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
