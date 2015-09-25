@@ -9,9 +9,9 @@ import csv
 
 # ======== Program Constants ========
 
-P_SIZE = 100 # USER INPUT
+P_SIZE = 30 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
-FIT_MODE = 2 # USER INPUT
+FIT_MODE = 3 # USER INPUT
 
 # ======== Functions ========
 
@@ -187,8 +187,8 @@ def evaluate(puzzle, target, population, genes, fit_num):
         elif puzzle == 2:
             score = puzzle_2_score_calc(element, genes)
             if score < 0:
-                score = 0
-            fitness_val = score**2 + 0.0001
+                score = 1 / abs(score)
+            fitness_val = score**2 + 0.0001 # math.log(score, 100*len(population)) + 0.0001
         elif puzzle == 3:
             score = puzzle_3_score_calc(element, genes)
             fitness_val = score**2 + 0.0001
@@ -209,12 +209,8 @@ def evaluate(puzzle, target, population, genes, fit_num):
         total_value -= raw_pop[i][0]
         raw_pop[i][0] = 0
     # Accumulate element fitness values
-    most_neg = raw_pop[0][0]
-    if most_neg < 0:
-        raw_pop[0][0] = 0
-        most_neg *= -1
     for i in range(1, len(raw_pop)):
-        raw_pop[i][0] += raw_pop[i - 1][0] + most_neg
+        raw_pop[i][0] += raw_pop[i - 1][0]
     # Normalize element fitness values
     for i in range(0, len(raw_pop)):
         try:
@@ -252,7 +248,6 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
         children_pop.append(parent_pop.pop(0))
 
     if puzzle == 1 or puzzle == 3:
-        print "Cross Over: " + str(puzzle)
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
@@ -281,13 +276,10 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
             children_pop.append(string_buf)
 
     elif puzzle == 2:
-#        print "Cross Over: " + str(puzzle)
-        print "Begin Cross Over"
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
             co_chance = rand.random()
-            print "checking for co_chance"
             
             if co_chance > 1 - temperature:
                 if not string_buf:
@@ -295,9 +287,6 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                 else:
                     a_string = string_buf # parent a
                     b_string = string # parent b
-                    
-                    print "Parent A: " + str(a_string)
-                    print "Parent B: " + str(b_string)
 
                     # Partial crossover so get a beginning and end index in a
                     begin_index = rand.randint(0, len(a_string) - 1)
@@ -337,22 +326,15 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                         if result_string_2.count(s) < b_string.count(s):
                             result_string_2.append(s)
                 
-                    print "R_S_1: " + str(result_string_1)
-                    print "R_S_2: " + str(result_string_2)
-                    
-                    print ''
-                
                     children_pop.append(result_string_1)
                     children_pop.append(result_string_2)
                     
                     string_buf = []
             else:
                 children_pop.append(string)
-                print "Not chosen for cross over"
                     
         if string_buf:
             children_pop.append(string_buf)
-        print "End Cross Over"
 #    elif puzzle == 3:
 #        # Tri write this                               <---------------------------------------------------------------------------
 #        string_buf = []
@@ -391,7 +373,6 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
     mutated_pop = []
     for i in range(0, fit_num):
         mutated_pop.append(children_pop.pop(0))
-    
     if puzzle == 1:
         for string in children_pop:
             m_index = 0
@@ -423,7 +404,7 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
             if m_chance > 1 - temperature:
                 #take out two random gene in the genes sequence
                 #this is for bin 1
-                string_buf = string
+                string_buf = [e for e in string]
                 temporary_value = string_buf[m_index1]
                 string_buf[m_index1] = string_buf[m_index1+20]
                 string_buf[m_index1+20] = temporary_value
@@ -460,13 +441,15 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
 
 # ==== Print Stats ====
 
-def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
+def print_stats(top_score, top_str, f_top_str, f_val, ts_gen, total_gen):
     # best score
     print "Top Score: " + str(top_score)
     # first best string
     print "First Top String: " + str(top_str)
     # first best score gen
     print "First Top Score Generation: " + str(ts_gen)
+    # final score
+    print "Final Top Score: " + str(f_val)
     # final best string
     print "Final Top String: " + str(f_top_str)
     # total gen
@@ -515,6 +498,8 @@ target = -1
 if puzzle_num == 1:
     target = float(fd[0])
     del fd[0]
+elif puzzle_num == 2:
+    target = 0.5*((10**10) + (10**2))
 
 # Format fd
 if puzzle_num == 1 or puzzle_num == 2:
@@ -578,6 +563,7 @@ while time_elapsed <= run_time:
         record_string = a_list[-1][1]
         record_gen = total_gen
 
+    
     # Selection
     b_list = select(a_list, elite_num)
     # Crossover
@@ -592,10 +578,19 @@ while time_elapsed <= run_time:
         stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
     # print temperature
     total_gen += 1
+    # time.sleep(0.1)
 
 print ''
 final_string = population[0]
-print_stats(record, record_string, final_string, record_gen, total_gen)
+final_sol = 0.0
+if puzzle_num == 1:
+    final_sol = puzzle_1_score_calc(population[0], fd, target)
+elif puzzle_num == 2:
+    final_sol = puzzle_2_score_calc(population[0], fd)
+elif puzzle_num == 3:
+    final_sol = puzzle_3_score_calc(population[0], fd)
+
+print_stats(record, record_string, final_string, final_sol, record_gen, total_gen)
 # Generate csv data file
 file_num = 0
 file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
