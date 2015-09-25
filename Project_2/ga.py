@@ -291,7 +291,6 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
         rand.shuffle(parent_pop)
         for string in parent_pop:
             co_chance = rand.random()
-            
             if co_chance > 1 - temperature:
                 if not string_buf:
                     string_buf = string
@@ -336,7 +335,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                         s = a_string[index]
                         if result_string_2.count(s) < b_string.count(s):
                             result_string_2.append(s)
-                
+                    
                     children_pop.append(result_string_1)
                     children_pop.append(result_string_2)
                     
@@ -346,36 +345,6 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
                     
         if string_buf:
             children_pop.append(string_buf)
-#    elif puzzle == 3:
-#        # Tri write this                               <---------------------------------------------------------------------------
-#        string_buf = []
-#        rand.shuffle(parent_pop)
-#        for string in parent_pop:
-#            if co_chance > 1 - temperature:
-#                if not string_buf:
-#                    string_buf = string
-#                else:
-#                    a_string = string_buf
-#                    b_string = string
-#                        
-#                    a_index = rand.randint(0, len(a_string))
-#                    b_index = rand.randint(0, len(b_string))
-#                        
-#                    c_string = a_string[:a_index] + b_string[b_index:]
-#                    d_string = a_string[a_index:] + b_string[:b_index]
-#
-#                    children_pop.append(c_string)
-#                    children_pop.append(d_string)
-#        
-#                    string_buf = []
-#            else:
-#                children_pop.append(string)
-#
-#        if string_buf:
-#            children_pop.append(string_buf)
-    else:
-        print "Error: Invalid puzzle in Crossover"
-        return
 
     return children_pop
 
@@ -539,13 +508,10 @@ while time_elapsed <= run_time:
     temperature = math.exp((-4*time_elapsed/run_time) - 0.3)
     # Evaluate
     a_list = evaluate(puzzle_num, target, population, fd, cull_num)
-<<<<<<< HEAD
-=======
     # print "GENERATION: " + str(total_gen)
     # print ""
     # print "EVALUATE: " + str(len(a_list))
     # print a_list[-1]
->>>>>>> 24d60ca17ff253fc6fcc8608ac62f44c1f2635f9
     
     # Record statistics
     score = 0.0
@@ -562,25 +528,13 @@ while time_elapsed <= run_time:
         record = score
         record_string = a_list[-1][1]
         record_gen = total_gen
-<<<<<<< HEAD
-=======
         # print "New Record: " + str(record)
         # print str(record_string)
         # print "==========================================================="
->>>>>>> 24d60ca17ff253fc6fcc8608ac62f44c1f2635f9
 
     
     # Selection
     b_list = select(a_list, elite_num)
-<<<<<<< HEAD
-    # Crossover
-    c_list = crossover(b_list, temperature, puzzle_num, elite_num)
-    # Mutation
-    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
-    population = d_list
-    #print population
-#    print ''
-=======
     # print "SELECT: " + str(len(b_list))
     # print b_list[0]
     # Crossover
@@ -594,7 +548,6 @@ while time_elapsed <= run_time:
     population = d_list
     # print population
     # print ''
->>>>>>> 24d60ca17ff253fc6fcc8608ac62f44c1f2635f9
     # Collect statistics
     if total_gen % 25 == 0:
         stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
