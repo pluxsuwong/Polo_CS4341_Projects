@@ -66,9 +66,14 @@ def rand_string(puzzle, GP):
                 chars.remove(i)
 
         # First layer is a door
-        door = rand.choice(doors)
+        try:
+            door = rand.choice(doors)
+        except IndexError:
+            print "Error: In rand_string() - Input contains no door layers"
+            sys.exit()
         string.append(door)
 
+        # Layers in between are walls
         string_len = rand.randint(0, len(chars))
         for i in range(0, string_len):
             c = rand.choice(chars)
@@ -76,7 +81,11 @@ def rand_string(puzzle, GP):
             chars.remove(c)
 
         # Last layer is a lookout
-        lookout = rand.choice(lookouts)
+        try:
+            lookout = rand.choice(lookouts)
+        except IndexError:
+            print "Error: In rand_string() - Input contains no lookout layers"
+            sys.exit()
         string.append(lookout)
     # Invalid puzzle
     else:
@@ -164,7 +173,7 @@ def puzzle_3_score_calc(tower, chars):
             s_limit = floor_strength
             total_cost += tower[i][3]
 
-    score = 10 + total_height**2 - total_cost
+        score = 10 + total_height**2 - total_cost
     if not no_repeats(tower, chars):
         score = 0.0
     return score
@@ -191,6 +200,8 @@ def evaluate(puzzle, target, population, genes, fit_num):
             fitness_val = score**2 + 0.0001 # math.log(score, 100*len(population)) + 0.0001
         elif puzzle == 3:
             score = puzzle_3_score_calc(element, genes)
+            if score < 0:
+                score = 1 / abs(score)
             fitness_val = score**2 + 0.0001
         else:
             print "Error: In evaluate() - Invalid Puzzle Number"
@@ -373,7 +384,7 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
     mutated_pop = []
     for i in range(0, fit_num):
         mutated_pop.append(children_pop.pop(0))
-    if puzzle == 1:
+    if puzzle == 1 or puzzle == 3:
         for string in children_pop:
             m_index = 0
             if string:
@@ -390,8 +401,6 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
                 mutated_pop.append(string)
     
     elif puzzle == 2:
-        # Jetro write this part <---------------------------------------------------------------------------
-        #puzzle 2 has to shuffle
         for string in children_pop:
             m_index1 = 0
             m_index2 = 0
@@ -418,22 +427,6 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
             else:
                 mutated_pop.append(string)
         
-    elif puzzle == 3:
-         for string in children_pop:
-            m_index = 0
-            if string:
-                m_index = rand.randint(0, len(string) - 1)
-            m_chance = rand.random()
-            string_buf = []
-            if m_chance > 1 - temperature:
-                new_gene = rand.choice(genes)
-                string_buf += string[:m_index]
-                string_buf.append(new_gene)
-                string_buf += string[m_index + 1:]
-                mutated_pop.append(string_buf)
-            else:
-                mutated_pop.append(string)
-                
     else:
         print "Error: Invalid Puzzle in Mutation"
 
@@ -546,6 +539,13 @@ while time_elapsed <= run_time:
     temperature = math.exp((-4*time_elapsed/run_time) - 0.3)
     # Evaluate
     a_list = evaluate(puzzle_num, target, population, fd, cull_num)
+<<<<<<< HEAD
+=======
+    # print "GENERATION: " + str(total_gen)
+    # print ""
+    # print "EVALUATE: " + str(len(a_list))
+    # print a_list[-1]
+>>>>>>> 24d60ca17ff253fc6fcc8608ac62f44c1f2635f9
     
     # Record statistics
     score = 0.0
@@ -562,10 +562,17 @@ while time_elapsed <= run_time:
         record = score
         record_string = a_list[-1][1]
         record_gen = total_gen
+<<<<<<< HEAD
+=======
+        # print "New Record: " + str(record)
+        # print str(record_string)
+        # print "==========================================================="
+>>>>>>> 24d60ca17ff253fc6fcc8608ac62f44c1f2635f9
 
     
     # Selection
     b_list = select(a_list, elite_num)
+<<<<<<< HEAD
     # Crossover
     c_list = crossover(b_list, temperature, puzzle_num, elite_num)
     # Mutation
@@ -573,8 +580,23 @@ while time_elapsed <= run_time:
     population = d_list
     #print population
 #    print ''
+=======
+    # print "SELECT: " + str(len(b_list))
+    # print b_list[0]
+    # Crossover
+    c_list = crossover(b_list, temperature, puzzle_num, elite_num)
+    # print "CROSSOVER: " + str(len(c_list))
+    # print c_list[0]
+    # Mutation
+    d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
+    # print "MUTATE: " + str(len(d_list))
+    # print d_list[0]
+    population = d_list
+    # print population
+    # print ''
+>>>>>>> 24d60ca17ff253fc6fcc8608ac62f44c1f2635f9
     # Collect statistics
-    if total_gen % 50 == 0:
+    if total_gen % 25 == 0:
         stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
     # print temperature
     total_gen += 1
