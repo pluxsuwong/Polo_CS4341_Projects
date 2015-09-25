@@ -515,10 +515,10 @@ while time_elapsed <= run_time:
     temperature = math.exp((-4*time_elapsed/run_time) - 0.3)
     # Evaluate
     a_list = evaluate(puzzle_num, target, population, fd, cull_num)
-    print "GENERATION: " + str(total_gen)
-    print ""
-    print "EVALUATE: " + str(len(a_list))
-    print a_list[-1]
+    # print "GENERATION: " + str(total_gen)
+    # print ""
+    # print "EVALUATE: " + str(len(a_list))
+    # print a_list[-1]
     
     # Record statistics
     score = 0.0
@@ -535,28 +535,28 @@ while time_elapsed <= run_time:
         record = score
         record_string = a_list[-1][1]
         record_gen = total_gen
-        print "New Record: " + str(record)
-        print str(record_string)
-        print "==========================================================="
+        # print "New Record: " + str(record)
+        # print str(record_string)
+        # print "==========================================================="
 
     
     # Selection
     b_list = select(a_list, elite_num)
-    print "SELECT: " + str(len(b_list))
-    print b_list[0]
+    # print "SELECT: " + str(len(b_list))
+    # print b_list[0]
     # Crossover
     c_list = crossover(b_list, temperature, puzzle_num, elite_num)
-    print "CROSSOVER: " + str(len(c_list))
-    print c_list[0]
+    # print "CROSSOVER: " + str(len(c_list))
+    # print c_list[0]
     # Mutation
     d_list = mutate(c_list, fd, temperature, puzzle_num, elite_num)
-    print "MUTATE: " + str(len(d_list))
-    print d_list[0]
+    # print "MUTATE: " + str(len(d_list))
+    # print d_list[0]
     population = d_list
     #print population
-    print ''
+    # print ''
     # Collect statistics
-    if total_gen % 50 == 0:
+    if total_gen % 25 == 0:
         stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
     # print temperature
     total_gen += 1
