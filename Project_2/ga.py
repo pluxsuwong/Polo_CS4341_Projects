@@ -9,7 +9,7 @@ import csv
 
 # ======== Program Constants ========
 
-P_SIZE = 30 # USER INPUT
+P_SIZE = 500 # USER INPUT
 # 3 - both, 2 - elitism, 1 - culling, 0 - none
 FIT_MODE = 3 # USER INPUT
 
@@ -57,13 +57,14 @@ def rand_string(puzzle, GP):
     elif puzzle == 3:
         doors = []
         lookouts = []
+        walls = []
         for i in chars:
             if i[0] == "Door":
                 doors.append(i)
-                chars.remove(i)
             elif i[0] == "Lookout":
                 lookouts.append(i)
-                chars.remove(i)
+            else:
+                walls.append(i)
 
         # First layer is a door
         try:
@@ -74,11 +75,11 @@ def rand_string(puzzle, GP):
         string.append(door)
 
         # Layers in between are walls
-        string_len = rand.randint(0, len(chars))
+        string_len = rand.randint(0, len(walls))
         for i in range(0, string_len):
-            c = rand.choice(chars)
+            c = rand.choice(walls)
             string.append(c)
-            chars.remove(c)
+            walls.remove(c)
 
         # Last layer is a lookout
         try:
@@ -258,7 +259,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
     for i in range(0, fit_num):
         children_pop.append(parent_pop.pop(0))
 
-    if puzzle == 1 or puzzle == 3:
+    if puzzle == 1:
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
@@ -346,6 +347,34 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
         if string_buf:
             children_pop.append(string_buf)
 
+    elif puzzle == 3:
+        string_buf = []
+        rand.shuffle(parent_pop)
+        for string in parent_pop:
+            co_chance = rand.random()
+            if co_chance > 1 - temperature:
+                if not string_buf:
+                    string_buf = string
+                else:
+                    a_string = string_buf
+                    b_string = string
+                    
+                    a_index = rand.randint(1, len(a_string) - 1)
+                    b_index = rand.randint(1, len(b_string) - 1)
+
+                    c_string = a_string[:a_index] + b_string[b_index:]
+                    d_string = a_string[a_index:] + b_string[:b_index]
+
+                    children_pop.append(c_string)
+                    children_pop.append(d_string)
+                    
+                    string_buf = []
+            else:
+                children_pop.append(string)
+
+        if string_buf:
+            children_pop.append(string_buf)
+
     return children_pop
 
 # Mutate strings in population
@@ -353,7 +382,8 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
     mutated_pop = []
     for i in range(0, fit_num):
         mutated_pop.append(children_pop.pop(0))
-    if puzzle == 1 or puzzle == 3:
+
+    if puzzle == 1:
         for string in children_pop:
             m_index = 0
             if string:
@@ -396,6 +426,29 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
             else:
                 mutated_pop.append(string)
         
+    elif puzzle == 3:
+        for string in children_pop:
+            m_index = 0 
+            m_chance = rand.random()
+            string_buf = []
+            if m_chance > 1 - temperature:
+                new_gene = rand.choice(genes)
+                if new_gene[0] == "Door":
+                    string_buf.append(new_gene)
+                    string_buf += string[1:]
+                elif new_gene[0] == "Lookout":
+                    string_buf += string[:len(string) - 1]
+                    string_buf.append(new_gene)
+                else:
+                    if string:
+                        m_index = rand.randint(0, len(string) - 2)
+                    string_buf += string[:m_index]
+                    string_buf.append(new_gene)
+                    string_buf += string[m_index + 1:]
+                mutated_pop.append(string_buf)
+            else:
+                mutated_pop.append(string)
+
     else:
         print "Error: Invalid Puzzle in Mutation"
 
@@ -426,6 +479,7 @@ def collect_stats(generation, puzzle_num, genes, population):
     m_performance = 0
     m_index = int(len(population)/2)
     scores = []
+    
     for i in range(0, len(population)):
         entry_string = population[i]
         if puzzle_num == 1:
@@ -436,11 +490,11 @@ def collect_stats(generation, puzzle_num, genes, population):
             entry_score = puzzle_3_score_calc(entry_string, genes)
         scores.append(entry_score)
     scores.sort()
-
+    
     b_performance = scores[-1]
     w_performance = scores[0]
     m_performance = scores[m_index]
-
+    
     stat_entry.append(generation)
     stat_entry.append(b_performance)
     stat_entry.append(w_performance)
@@ -487,7 +541,7 @@ elif FIT_MODE == 3:
     cull_num = int(P_SIZE/5) + 1
     elite_num = cull_num
 
-time_elapsed = 0
+time_elapsed = 0.0
 temperature = 0
 record = -1
 record_string = []
@@ -498,41 +552,22 @@ a_list = []
 b_list = []
 c_list = []
 d_list = []
+
+gen_snapshot = []
 stat_sheet = []
 
 population = gen_init_pop(puzzle_num, fd, P_SIZE)
-
 while time_elapsed <= run_time:
     # Time in seconds
     time_elapsed = time.time() - start_time
-    temperature = math.exp((-4*time_elapsed/run_time) - 0.3)
+    temperature = math.exp(-time_elapsed/run_time)
+    # math.exp((-4*time_elapsed/run_time) - 0.3)
     # Evaluate
     a_list = evaluate(puzzle_num, target, population, fd, cull_num)
     # print "GENERATION: " + str(total_gen)
     # print ""
     # print "EVALUATE: " + str(len(a_list))
-    # print a_list[-1]
-    
-    # Record statistics
-    score = 0.0
-    if puzzle_num == 1:
-        score = puzzle_1_score_calc(a_list[-1][1], fd, target)
-    elif puzzle_num == 2:
-        score = puzzle_2_score_calc(a_list[-1][1], fd)
-    elif puzzle_num == 3:
-        score = puzzle_3_score_calc(a_list[-1][1], fd)
-    else:
-        print "Error: Invalid Puzzle in main()"
-        sys.exit()
-    if score > record:
-        record = score
-        record_string = a_list[-1][1]
-        record_gen = total_gen
-        # print "New Record: " + str(record)
-        # print str(record_string)
-        # print "==========================================================="
-
-    
+    # print a_list[-1] 
     # Selection
     b_list = select(a_list, elite_num)
     # print "SELECT: " + str(len(b_list))
@@ -549,11 +584,31 @@ while time_elapsed <= run_time:
     # print population
     # print ''
     # Collect statistics
-    if total_gen % 25 == 0:
-        stat_sheet.append(collect_stats(total_gen, puzzle_num, fd, population))
+    snapshot = [total_gen, puzzle_num, fd, population]
+    gen_snapshot.append(snapshot)
     # print temperature
     total_gen += 1
     # time.sleep(0.1)
+
+gen_ctr = 0
+for s in gen_snapshot:
+    stat_sheet.append(collect_stats(s[0], s[1], s[2], s[3]))
+
+    for i in s[3]:
+        # Record statistics
+        score = 0.0
+        if puzzle_num == 1:
+            score = puzzle_1_score_calc(i, fd, target)
+        elif puzzle_num == 2:
+            score = puzzle_2_score_calc(i, fd)
+        elif puzzle_num == 3:
+            score = puzzle_3_score_calc(i, fd)
+        
+        if score > record:
+            record = score
+            record_string = i
+            record_gen = gen_ctr
+    gen_ctr += 1
 
 print ''
 final_string = population[0]
@@ -566,12 +621,23 @@ elif puzzle_num == 3:
     final_sol = puzzle_3_score_calc(population[0], fd)
 
 print_stats(record, record_string, final_string, final_sol, record_gen, total_gen)
+
+
 # Generate csv data file
+# Create necessary directory
+prefix = "P_" + str(puzzle_num) 
+directory = prefix
+try: 
+    os.makedirs(directory)
+except OSError:
+    if not os.path.isdir(directory):
+        raise
+# Create files
 file_num = 0
-file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
+file_name = prefix + "/P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
 while os.path.isfile(file_name):
     file_num += 1
-    file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
+    file_name = "P_" + str(puzzle_num) + "/P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
 
 csv_file = open(file_name, 'w')
 col_0 = "Generation"
