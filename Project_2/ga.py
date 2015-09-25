@@ -456,15 +456,17 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
 
 # ==== Print Stats ====
 
-def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
+def print_stats(top_score, top_str, f_top_str, f_val, ts_gen, total_gen):
     # best score
     print "Top Score: " + str(top_score)
     # first best string
-    print "Top String (First): " + str(top_str)
-    # final best string
-    print "Top String (Final): " + str(f_top_str)
+    print "First Top String: " + str(top_str)
     # first best score gen
-    print "Top Score Generation: " + str(ts_gen)
+    print "First Top Score Generation: " + str(ts_gen)
+    # final score
+    print "Final Top Score: " + str(f_val)
+    # final best string
+    print "Final Top String: " + str(f_top_str)
     # total gen
     print "Total Generations: " + str(total_gen)
 
@@ -610,14 +612,32 @@ for s in gen_snapshot:
 
 print ''
 final_string = population[0]
-print_stats(record, record_string, final_string, record_gen, total_gen)
+final_sol = 0.0
+if puzzle_num == 1:
+    final_sol = puzzle_1_score_calc(population[0], fd, target)
+elif puzzle_num == 2:
+    final_sol = puzzle_2_score_calc(population[0], fd)
+elif puzzle_num == 3:
+    final_sol = puzzle_3_score_calc(population[0], fd)
+
+print_stats(record, record_string, final_string, final_sol, record_gen, total_gen)
+
 
 # Generate csv data file
+# Create necessary directory
+prefix = "P_" + str(puzzle_num) 
+directory = prefix
+try: 
+    os.makedirs(directory)
+except OSError:
+    if not os.path.isdir(directory):
+        raise
+# Create files
 file_num = 0
-file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
+file_name = prefix + "/P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
 while os.path.isfile(file_name):
     file_num += 1
-    file_name = "P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
+    file_name = "P_" + str(puzzle_num) + "/P_" + str(puzzle_num) + "_N_" + str(file_num)  + ".csv"
 
 csv_file = open(file_name, 'w')
 col_0 = "Generation"
