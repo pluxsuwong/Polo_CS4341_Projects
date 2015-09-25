@@ -6,22 +6,30 @@ Instruction on Execution:
 
 	Where:
 		- ga.py: is the name of the source file for the genetic algorithm
-		- [puzzle]: the number that indicates the puzzle (from 1 to 3; 1 being the first puzzle, 2 being the second, 3 being the third)
+		- [puzzle]: the number that indicates the puzzle (from 1 to 3; 1 being the first puzzle, 
+            2 being the second, 3 being the third)
         - [input]: is the input for each puzzle as a .txt file e.g. puzzle_input_1.txt
-		- [time]: the number of time in seconds that the code would run for. More time equivalates to more generations
+		- [time]: the number of time in seconds that the code would run for. More time 
+            equivalates to more generations
 
     Output:
         - single csv file of P_x_N_y.csv, for puzzle x
 
-2. An input generator is also available for generating input file:
+    Notes:
+        - a constant defined at the top of ga.py determines whether elitism and/or culling should 
+            be used. By default, the genetic algorithm uses a combination of both elitism and 
+            culling.
+
+2. An input generator is also available for generating input files:
 
 	python gen_input.py [puzzle]
 
 	Where:
 		- gen_input.py: is the source file for the generator
-		- [puzzle]: the number that indicates the puzzle (from 1 to 3; 1 being the first puzzle, 2 being the second, 3 being the third)
+		- [puzzle]: the number that indicates the puzzle (from 1 to 3; 1 being the first puzzle, 
+            2 being the second, 3 being the third)
 
-3. A BASH script is also available for multiple execution of the python genetic algorithm script. In a BASH terminal, type in the command:
+3. A BASH script is also available for multiple executions:
 
     ./run_tests.sh
 
@@ -32,7 +40,7 @@ Instruction on Execution:
         - three directories of P_x, for puzzle x
         - five csv files in each directory of P_x_N_y.csv, for puzzle x
     
-4. A BASH script for folder clean up is also available. In a BASH terminal, type in the command:
+4. A BASH script for folder clean up is also available:
 
     ./clean_tests.sh
 
