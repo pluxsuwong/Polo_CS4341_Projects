@@ -53,46 +53,6 @@ def rand_string(puzzle, GP):
             c = rand.choice(chars)
             string.append(c)
             chars.remove(c)
-    '''
-    # Puzzle 3
-    elif puzzle == 3:
-        doors = []
-        lookouts = []
-        walls = []
-        for i in chars:
-            if i[0] == "Door":
-                doors.append(i)
-            elif i[0] == "Lookout":
-                lookouts.append(i)
-            else:
-                walls.append(i)
-
-        # First layer is a door
-        try:
-            door = rand.choice(doors)
-        except IndexError:
-            print "Error: In rand_string() - Input contains no door layers"
-            sys.exit()
-        string.append(door)
-
-        # Layers in between are walls
-        string_len = rand.randint(0, len(walls))
-        for i in range(0, string_len):
-            c = rand.choice(walls)
-            string.append(c)
-            walls.remove(c)
-
-        # Last layer is a lookout
-        try:
-            lookout = rand.choice(lookouts)
-        except IndexError:
-            print "Error: In rand_string() - Input contains no lookout layers"
-            sys.exit()
-        string.append(lookout)
-    # Invalid puzzle
-    else:
-        print "Error: In rand_string() - Invalid Puzzle Number"
-    '''
     
     return string
 
