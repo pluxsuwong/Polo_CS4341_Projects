@@ -18,7 +18,7 @@ Instruction on Execution:
     Notes:
         - a constant defined at the top of ga.py determines whether elitism and/or culling should 
             be used. By default, the genetic algorithm uses a combination of both elitism and 
-            culling.
+            culling
 
 2. An input generator is also available for generating input files:
 
@@ -26,18 +26,20 @@ Instruction on Execution:
 
 	Where:
 		- gen_input.py: is the source file for the generator
-		- [puzzle]: the number that indicates the puzzle (from 1 to 3; 1 being the first puzzle, 
-            2 being the second, 3 being the third)
+		- [puzzle]: the number that indicates the input to be generated (from 1 to 3; 1 being the
+            first puzzle, 2 being the second, 3 being the third).
 
 3. A BASH script is also available for multiple executions:
 
-    ./run_tests.sh
+    ./run_tests.sh [puzzle, ...]
 
     Where:
         - run_tests.sh is the script file in the project directory
+        - [puzzle]: the numbers that indicate the puzzles. If no numbers are entered, all three
+            are run
 
     Output:
-        - three directories of P_x, for puzzle x
+        - directories of P_x, for puzzle x
         - five csv files in each directory of P_x_N_y.csv, for puzzle x
     
 4. A BASH script for folder clean up is also available:
