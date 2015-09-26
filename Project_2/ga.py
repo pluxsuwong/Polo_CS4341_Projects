@@ -39,8 +39,8 @@ def rand_string(puzzle, GP):
     string = []
     string_len = -1
     
-    # Puzzle 1
-    if puzzle == 1:
+    # Puzzle 1 or 3
+    if puzzle == 1 or puzzle == 3:
         string_len = rand.randint(1, len(chars))
         for i in range(0, string_len):
             c = rand.choice(chars)
@@ -53,44 +53,6 @@ def rand_string(puzzle, GP):
             c = rand.choice(chars)
             string.append(c)
             chars.remove(c)
-    # Puzzle 3
-    elif puzzle == 3:
-        doors = []
-        lookouts = []
-        walls = []
-        for i in chars:
-            if i[0] == "Door":
-                doors.append(i)
-            elif i[0] == "Lookout":
-                lookouts.append(i)
-            else:
-                walls.append(i)
-
-        # First layer is a door
-        try:
-            door = rand.choice(doors)
-        except IndexError:
-            print "Error: In rand_string() - Input contains no door layers"
-            sys.exit()
-        string.append(door)
-
-        # Layers in between are walls
-        string_len = rand.randint(0, len(walls))
-        for i in range(0, string_len):
-            c = rand.choice(walls)
-            string.append(c)
-            walls.remove(c)
-
-        # Last layer is a lookout
-        try:
-            lookout = rand.choice(lookouts)
-        except IndexError:
-            print "Error: In rand_string() - Input contains no lookout layers"
-            sys.exit()
-        string.append(lookout)
-    # Invalid puzzle
-    else:
-        print "Error: In rand_string() - Invalid Puzzle Number"
     
     return string
 
@@ -259,7 +221,7 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
     for i in range(0, fit_num):
         children_pop.append(parent_pop.pop(0))
 
-    if puzzle == 1:
+    if puzzle == 1 or puzzle == 3:
         string_buf = []
         rand.shuffle(parent_pop)
         for string in parent_pop:
@@ -347,34 +309,6 @@ def crossover(parent_pop, temperature, puzzle, fit_num):
         if string_buf:
             children_pop.append(string_buf)
 
-    elif puzzle == 3:
-        string_buf = []
-        rand.shuffle(parent_pop)
-        for string in parent_pop:
-            co_chance = rand.random()
-            if co_chance > 1 - temperature:
-                if not string_buf:
-                    string_buf = string
-                else:
-                    a_string = string_buf
-                    b_string = string
-                    
-                    a_index = rand.randint(1, len(a_string) - 1)
-                    b_index = rand.randint(1, len(b_string) - 1)
-
-                    c_string = a_string[:a_index] + b_string[b_index:]
-                    d_string = a_string[a_index:] + b_string[:b_index]
-
-                    children_pop.append(c_string)
-                    children_pop.append(d_string)
-                    
-                    string_buf = []
-            else:
-                children_pop.append(string)
-
-        if string_buf:
-            children_pop.append(string_buf)
-
     return children_pop
 
 # Mutate strings in population
@@ -383,7 +317,7 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
     for i in range(0, fit_num):
         mutated_pop.append(children_pop.pop(0))
 
-    if puzzle == 1:
+    if puzzle == 1 or puzzle == 3:
         for string in children_pop:
             m_index = 0
             if string:
@@ -425,44 +359,16 @@ def mutate(children_pop, genes, temperature, puzzle, fit_num):
                 mutated_pop.append(string_buf)
             else:
                 mutated_pop.append(string)
-        
-    elif puzzle == 3:
-        for string in children_pop:
-            m_index = 0 
-            m_chance = rand.random()
-            string_buf = []
-            if m_chance > 1 - temperature:
-                new_gene = rand.choice(genes)
-                if new_gene[0] == "Door":
-                    string_buf.append(new_gene)
-                    string_buf += string[1:]
-                elif new_gene[0] == "Lookout":
-                    string_buf += string[:len(string) - 1]
-                    string_buf.append(new_gene)
-                else:
-                    if string:
-                        m_index = rand.randint(0, len(string) - 2)
-                    string_buf += string[:m_index]
-                    string_buf.append(new_gene)
-                    string_buf += string[m_index + 1:]
-                mutated_pop.append(string_buf)
-            else:
-                mutated_pop.append(string)
-
-    else:
-        print "Error: Invalid Puzzle in Mutation"
 
     return mutated_pop
 
 # ==== Print Stats ====
 
-def print_stats(top_score, top_str, f_top_str, ts_gen, total_gen):
+def print_stats(top_score, top_str, ts_gen, total_gen):
     # best score
     print "Top Score: " + str(top_score)
     # first best string
     print "Top String (First): " + str(top_str)
-    # final best string
-    print "Top String (Final): " + str(f_top_str)
     # first best score gen
     print "Top Score Generation: " + str(ts_gen)
     # total gen
@@ -609,8 +515,7 @@ for s in gen_snapshot:
     gen_ctr += 1
 
 print ''
-final_string = population[0]
-print_stats(record, record_string, final_string, record_gen, total_gen)
+print_stats(record, record_string, record_gen, total_gen)
 
 # Generate csv data file
 file_num = 0
